@@ -2,7 +2,7 @@
 exports.up = function(knex) {
     return knex.schema.createTable("users", (usersTable) => {
         usersTable.text("username").primary()
-        usersTable.unique("username");
+        // usersTable.unique("username");
         usersTable.text("avatar_url");
         usersTable.text('name')
       });

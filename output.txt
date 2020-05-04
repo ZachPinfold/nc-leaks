@@ -1,17 +1,1 @@
-You are now connected to database "nc_news" as user "zachpinfold".
- slug | description 
-------+-------------
-(0 rows)
-
- username | avatar_url | name 
-----------+------------+------
-(0 rows)
-
- article_id | title | body | votes | topic | author | created_at 
-------------+-------+------+-------+-------+--------+------------
-(0 rows)
-
- comment_id | author | article_id | votes | created_at | body 
-------------+--------+------------+-------+------------+------
-(0 rows)
-
+You are now connected to database "nc_news_test" as user "zachpinfold".
