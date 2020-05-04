@@ -5,7 +5,7 @@ const {
   userData
 } = require('../data/index.js');
 
-// console.log(articleData)
+
 
 const { formatDates, formatComments, makeRefObj } = require('../utils/utils');
 
@@ -21,6 +21,11 @@ exports.seed = function(knex) {
 
   return Promise.all([topicsInsertions, usersInsertions])
     .then(() => {
+      const newArticleData = formatDates(articleData)
+      return knex
+      .insert(newArticleData)
+      .into('articles')
+      .returning('*')
     //   /* 
       
     //   Your article data is currently in the incorrect format and will violate your SQL schema. 

@@ -8,7 +8,7 @@ exports.up = function (knex) {
     articlesTable.foreign('topic').references("topics.slug")
     articlesTable.text('author')
     articlesTable.foreign('author').references("users.username")
-    articlesTable.timestamp('created_at').defaultTo(knex.fn.now());
+    articlesTable.text('created_at')
   });
 };
 
