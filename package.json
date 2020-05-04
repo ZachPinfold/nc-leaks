@@ -7,7 +7,10 @@
     "setup-dbs": "psql -f ./db/setup.sql",
     "seed": "knex seed:run",
     "test-utils": "jest spec/utils.spec.js",
-    "test": "jest spec/app.spec.js"
+    "test": "jest spec/app.spec.js",
+    "migrate-make": "knex migrate:make",
+    "migrate-latest": "knex migrate:latest",
+    "migrate-rollback": "knex migrate:rollback"
   },
   "repository": {
     "type": "git",
