@@ -6,7 +6,7 @@ const {
 
 describe("formatDates", () => {
   test("should return a reformatted date from the timestamp provided in a comment", () => {
-    const input = [
+    const input1 = [
       {
         body: "I hate streaming noses",
         belongs_to: "Living in the shadow of a great man",
@@ -22,11 +22,10 @@ describe("formatDates", () => {
         created_at: 1353674163389,
       },
     ];
-    const updatedDate = formatDates(input);
+    const updatedDate = formatDates(input1);
     updatedDate.map((item) => {
       expect(item.created_at).not.toBe("Invalid Date");
     });
-    // expect(formatDates(input)).toEqual(output);
   });
 
   test("should return a reformatted date from the timestamp provided in an article", () => {
@@ -141,7 +140,6 @@ describe("formatComments", () => {
     ];
     const lookUpObj = makeRefObj(articlArray, 'article_id', 'title')
     const format = formatComments(input, lookUpObj, 'belongs_to', 'article_id', 'created_by', 'author')
-    console.log(format)    
     expect(format).toEqual(output)
   });
 });
