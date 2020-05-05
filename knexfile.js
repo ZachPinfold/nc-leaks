@@ -1,4 +1,5 @@
 const ENV = process.env.NODE_ENV || 'development';
+console.log('connecting to ENV' + ENV)
 
 const baseConfig = {
   client: 'pg',

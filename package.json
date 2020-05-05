@@ -6,10 +6,12 @@
   "scripts": {
     "setup-dbs": "psql -f ./db/setup.sql",
     "test-utils": "jest spec/utils.spec.js",
-    "test": "NODE_ENV=test npm run migrate-rollback &&  NODE_ENV=test npm run migrate-latest &&  NODE_ENV=test knex seed:run && NODE_ENV=test jest",
+    "test": "NODE_ENV=test npm run migrate-rollback &&  NODE_ENV=test npm run migrate-latest && NODE_ENV=test knex seed:run && NODE_ENV=test jest",
+    "test2": "NODE_ENV=test npm run migrate-rollback && NODE_ENV=test npm run migrate-latest && NODE_ENV=test jest",
+    "test-dev": "npm run migrate-rollback && npm run migrate-latest && knex seed:run && jest",
     "migrate-make": "knex migrate:make",
     "migrate-latest": "knex migrate:latest",
-    "migrate-rollback": "NODE_ENV=test knex migrate:rollback",
+    "migrate-rollback": "knex migrate:rollback",
     "seed-dev": "npm run migrate-rollback && npm run migrate-latest && knex seed:run",
     "seed-test": "NODE_ENV=test npm run migrate-rollback &&  NODE_ENV=test npm run migrate-latest &&  NODE_ENV=test knex seed:run"
   },

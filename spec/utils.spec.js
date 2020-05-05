@@ -24,6 +24,7 @@ describe("formatDates", () => {
     ];
     const updatedDate = formatDates(input1);
     updatedDate.map((item) => {
+      // expect(item.created_at).toBe(new Date(1385210163389))
       expect(item.created_at).not.toBe("Invalid Date");
     });
   });
@@ -105,8 +106,6 @@ describe("formatComments", () => {
       author: 'zach',
       created_at: '11/23/1986'
     }]
-
-
 
     const input = [{
   body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",

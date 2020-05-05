@@ -1,9 +1,11 @@
-// process.env.NODE_ENV = 'test'
+process.env.NODE_ENV = 'test'
 const request = require("supertest");
 const app = require("../server/app");
 const connection = require("../server/connection");
 
-// beforeEach(()=> connection.seed.run())
+beforeEach(()=> connection.migrate.rollback())
+beforeEach(()=> connection.migrate.latest())
+beforeEach(()=> connection.seed.run())
 
 describe("/API", () => {
   // BASELINE TESTING
@@ -57,11 +59,12 @@ describe("/API", () => {
   // ARTICLE TESTING
 
   describe("/articles", () => {
-    test("200 should return with a article by id user", () => {
+    test("GET 200 should return with a article by user id", () => {
       return request(app)
         .get("/api/article/1")
         .expect(200)
         .then(({ body }) => {
+          // more simple response
           expect(body.article[0].article_id).toBe(1);
           expect(body.article[0].title).toBe(
             "Living in the shadow of a great man"
@@ -79,7 +82,7 @@ describe("/API", () => {
 
   // patch article by id
 
-  test("200 patch article votes by article id", () => {
+  test("PATCH 200 patch article votes by article id", () => {
     return request(app)
       .patch("/api/article/1")
       .send({ inc_votes: 50 })
@@ -91,7 +94,7 @@ describe("/API", () => {
 
   // post comment to article by article ID
 
-  test("201 Adds a new comment to an article by article id", () => {
+  test("POST 201 Adds a new comment to an article by article id", () => {
     return request(app)
       .post("/api/article/1/comments")
       .send({
@@ -99,63 +102,109 @@ describe("/API", () => {
         body: "this really was a great read for sure",
       })
       .expect(201)
-      .then(({body}) => {
-       const {comment} = body
-        expect(comment[0].comment_id).toBe(19)
-        expect(comment[0].author).toBe('butter_bridge')
-        expect(comment[0].article_id).toBe(1)
-        expect(comment[0].votes).toBe(0)
-        expect(comment[0].created_at).not.toBe("Invalid Date")
-        expect(comment[0].body).toBe("this really was a great read for sure")
+      .then(({ body }) => {
+        const { comment } = body;
+        expect(comment[0].comment_id).toBe(19);
+        expect(comment[0].author).toBe("butter_bridge");
+        expect(comment[0].article_id).toBe(1);
+        expect(comment[0].votes).toBe(0);
+        expect(comment[0].created_at).not.toBe("Invalid Date");
+        expect(comment[0].body).toBe("this really was a great read for sure");
       });
   });
 
   // get comments by article id
 
-  test('200 Get all the available comments by its id', () => {
+  test("GET 200 Get all the available comments by its id", () => {
     return request(app)
-    .get("/api/article/9/comments")
-    .expect(200)
-    .then(({body}) => {
-      body.comments.forEach((comment) => {
-        expect(comment).toHaveProperty("comment_id");
-        expect(comment).toHaveProperty("author");
-        expect(comment).toHaveProperty("votes");
-        expect(comment).toHaveProperty("body");
-        expect(comment).toHaveProperty("created_at");
+      .get("/api/article/9/comments")
+      .expect(200)
+      .then(({ body }) => {
+        body.comments.forEach((comment) => {
+          expect(comment).toHaveProperty("comment_id");
+          expect(comment).toHaveProperty("author");
+          expect(comment).toHaveProperty("votes");
+          expect(comment).toHaveProperty("body");
+          expect(comment).toHaveProperty("created_at");
+        });
       });
-    })
   });
 
-  // get comments by article id & SORT BY A VALID COLUMN
+  // get comments by article id & sort by deafult (created_at)
 
-  test('200 responds with an array of all the articles comments sorted by created at (newest first)', () => {
+  test("GET 200 responds with an array of all the articles comments sorted by created at (newest first)", () => {
     return request(app)
-    .get("/api/article/1/comments")
-    .expect(200)
-    .then(({body}) => {
-     expect(body.comments).toBeSortedBy('created_at', {
-       descending: true,
-      //  coerce: true
-     });
-    })
+      .get("/api/article/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments).toBeSortedBy("created_at", {
+          descending: true,
+          //  coerce: true
+        });
+      });
   });
-
 
   // get comments by article id & SORT BY A VALID ASC/DESC QUERY
 
-  test('200 responds with an array of all the articles comments sorted by a valid query ASC/DESC', () => {
+  test("GET 200 responds with an array of all the articles comments sorted by a valid query ASC/DESC", () => {
     return request(app)
-    .get("/api/article/1/comments?order=asc")
-    .expect(200)
-    .then(({body}) => {
-     expect(body.comments).toBeSortedBy('created_at', {
-       descending: false,
-      //  coerce: true
-     });
-    })
+      .get("/api/article/1/comments?order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments).toBeSortedBy("created_at", {
+          descending: false,
+          //  coerce: true
+        });
+      });
   });
 
+  // Add a sort_by new valid column 
+
+  // get all articles
+
+  test("GET 200 responds with an array of all the articles", () => {
+    return request(app)
+      .get("/api/article")
+      .expect(200)
+      .then(({ body }) => {
+        expect(Array.isArray(body.articles)).toBe(true);
+        body.articles.forEach((article) => {
+          expect(article).toHaveProperty("author");
+          expect(article).toHaveProperty("title");
+          expect(article).toHaveProperty("article_id");
+          expect(article).toHaveProperty("topic");
+          expect(article).toHaveProperty("created_at");
+          expect(article).toHaveProperty("votes");
+          expect(article).toHaveProperty("comment_count");
+        });
+      });
+  });
+
+  // Defaults sort-by articles to DATE in ascending order
+
+  test("GET 200 responds with an array of all the articles sorted by a default (DATE)", () => {
+    return request(app)
+      .get("/api/article")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSortedBy("created_at", {
+          descending: true,
+          //  coerce: true
+        });
+      });
+  });
+
+  // change the default sort by to ascending
+
+  test("GET 200 responds with an array of all the articles sorted by a default (DATE)", () => {
+    return request(app)
+      .get("/api/article?order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSortedBy("created_at", {
+          descending: false,
+          //  coerce: true
+        });
+      });
+  });
 });
-
-
