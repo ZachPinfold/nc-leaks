@@ -58,7 +58,7 @@ exports.getCommentsByArticleId = (article_id, order = "desc") => {
     });
 };
 
-exports.fetchAllArticles = () => {
+exports.fetchAllArticles = (order = 'desc', sort_by = 'created_at', username, topic) => {
   return connection
     .select(
       "articles.author",
@@ -72,7 +72,11 @@ exports.fetchAllArticles = () => {
     .from("articles")
     .leftJoin("comments", "articles.article_id", "=", "comments.article_id")
     .groupBy("articles.article_id")
-    .orderBy("created_at", 'desc')
+    .orderBy(sort_by, order)
+    .modify((query) => {
+      if (username) query.where('articles.author', username)
+      if (topic) query.where('articles.topic', topic)
+    })
     .returning("*")
     .then((articles) => {
         return {articles}

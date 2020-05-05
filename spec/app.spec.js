@@ -187,6 +187,7 @@ describe("/API", () => {
       .get("/api/article")
       .expect(200)
       .then(({ body }) => {
+        expect(Array.isArray(body.articles)).toBe(true);
         expect(body.articles).toBeSortedBy("created_at", {
           descending: true,
           //  coerce: true
@@ -196,15 +197,86 @@ describe("/API", () => {
 
   // change the default sort by to ascending
 
-  test("GET 200 responds with an array of all the articles sorted by a default (DATE)", () => {
+  test("GET 200 should switch up the order to asc based on the query", () => {
     return request(app)
       .get("/api/article?order=asc")
       .expect(200)
       .then(({ body }) => {
+        expect(Array.isArray(body.articles)).toBe(true);
         expect(body.articles).toBeSortedBy("created_at", {
           descending: false,
           //  coerce: true
         });
       });
   });
+
+    // change the sort by to sort by a viable column
+
+    test("GET 200 should change up the order sort by, with a viable column", () => {
+      return request(app)
+        .get("/api/article?sort_by=comment_count")
+        .expect(200)
+        .then(({ body }) => {
+          expect(Array.isArray(body.articles)).toBe(true);
+          expect(body.articles).toBeSortedBy("comment_count", {
+            descending: true,
+             coerce: true
+          });
+        });
+    });
+
+
+    // Filter the array by a specific username
+
+      test("GET 200 filter the article by a specific username (butter_bridge)", () => {
+      return request(app)
+        .get("/api/article?username=butter_bridge")
+        .expect(200)
+        .then(({ body }) => {
+          expect(Array.isArray(body.articles)).toBe(true);
+          body.articles.forEach((article) => {
+            expect(article.author).toEqual('butter_bridge');
+          })
+        });
+    });
+
+    test("GET 200 filter the article by a specific username (icellusedkars)", () => {
+      return request(app)
+        .get("/api/article?username=icellusedkars")
+        .expect(200)
+        .then(({ body }) => {
+          expect(Array.isArray(body.articles)).toBe(true);
+          body.articles.forEach((article) => {
+            expect(article.author).toEqual('icellusedkars');
+          })
+        });
+    });
+
+    // Filter the array by a specific topic
+
+    test("GET 200 filter the article by a specific topic (mitch)", () => {
+      return request(app)
+        .get("/api/article?topic=mitch")
+        .expect(200)
+        .then(({ body }) => {
+          expect(Array.isArray(body.articles)).toBe(true);
+          body.articles.forEach((article) => {
+            expect(article.topic).toEqual('mitch');
+          })
+        });
+    });
+
+    test("GET 200 filter the article by a specific topic (cats)", () => {
+      return request(app)
+        .get("/api/article?topic=cats")
+        .expect(200)
+        .then(({ body }) => {
+          expect(Array.isArray(body.articles)).toBe(true);
+          body.articles.forEach((article) => {
+            expect(article.topic).toEqual('cats');
+          })
+        });
+    });
+
+  
 });
