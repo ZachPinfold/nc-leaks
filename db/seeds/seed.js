@@ -13,9 +13,10 @@ exports.seed = function (knex) {
   return Promise.all([topicsInsertions, usersInsertions])
     .then(() => {
       const newArticleData = formatDates(articleData);
-      return knex.insert(newArticleData).into("articles").returning("*");
+      return knex.insert(newArticleData).into("articles").returning("*")
     })
     .then((articleRows) => {
+      // console.log(articleRows)
       const newCommentTimeData = formatDates(commentData);
 
       const articleRef = makeRefObj(articleRows, "article_id", "title");
@@ -31,6 +32,6 @@ exports.seed = function (knex) {
       return knex("comments").insert(formattedComments).returning("*");
     })
     .then((comment) => {
-      // console.log(comment);
+      console.log(comment);
     });
 };
