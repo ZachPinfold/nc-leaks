@@ -78,7 +78,6 @@ describe("/API", () => {
           expect(body.article[0].comment_count).toBe("13");
         });
     });
-  });
 
   // patch article by id
 
@@ -278,5 +277,24 @@ describe("/API", () => {
         });
     });
 
-  
+  });
+    // COMMENTS TESTS
+
+    // Patch existing comments with an updated vote count
+
+    describe('/Comments', () => {
+      
+    test("PATCH 200 patch article votes by comment id", () => {
+      return request(app)
+        .patch("/api/comments/1")
+        .send({ inc_votes: 50 })
+        .expect(200)
+        .then(({ body }) => {
+          console.log(body)
+          expect(body.article[0].votes).toBe(150);
+        });
+    });
+  });
+
+
 });
