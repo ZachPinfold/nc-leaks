@@ -1,6 +1,9 @@
+// process.env.NODE_ENV = 'test'
 const request = require("supertest");
 const app = require("../server/app");
 const connection = require("../server/connection");
+
+// beforeEach(()=> connection.seed.run())
 
 describe("/API", () => {
 
@@ -80,7 +83,7 @@ describe("/API", () => {
     .send({ inc_votes : 50 })
     .expect(200)
     .then(({body}) => {
-      expect(body.votes).toEqual(150);
+      expect(body.votes).toBe(150);
     })
   });
 

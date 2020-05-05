@@ -2,18 +2,20 @@ const {selectArticleById, patchArticleVoteById} = require('../models/article.mod
 
 exports.getArticles = (req, res, next) => {
     const {article_id} = req.params
-    selectArticleById(article_id).then((article) => {
-        console.log(article)
+    selectArticleById(article_id).then(({article}) => {
+        // conso
         res.status(200)
-        res.send(article)
+        res.send(article[0])
     })
 }
 
 exports.patchArticle = (req, res, next) => {
     const {article_id} = req.params
     const votes = req.body.inc_votes
-    patchArticleVoteById(article_id, votes).then((article) => {
+    patchArticleVoteById(article_id, votes).then(({article}) => {
+        const {votes} = article[0]
+        // console.log(votes)
         res.status(200)
-        res.send(article)
+        res.send(article[0])
     })
 }

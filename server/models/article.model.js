@@ -9,9 +9,8 @@ exports.selectArticleById = (article_id) => {
     .where("articles.article_id", article_id)
     .groupBy('articles.article_id')
     .returning("*")
-    .then((articleData) => {
-        console.log(articleData)
-       return articleData[0]
+    .then((article) => {
+       return {article}
     });
 };
 
@@ -19,9 +18,9 @@ exports.patchArticleVoteById = (article_id, votes) => {
     return connection('articles')
     // .update({votes})
     .where({article_id})
-    .increment('votes', 10)
+    .increment('votes', votes)
     .returning('*')
     .then((article) => {
-        console.log(article)
+        return {article}
     })
 }
