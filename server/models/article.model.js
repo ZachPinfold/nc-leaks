@@ -31,9 +31,8 @@ exports.postCommentByArticleId = (article_id, commentData) => {
     return connection
     .into('comments')
     .insert([{author: username, body: body, article_id: article_id, created_at: date}])
-
-    // .returning('*')
+    .returning('*')
     .then((comment) => {
-        console.log(comment)
+        return {comment}
     })
 }

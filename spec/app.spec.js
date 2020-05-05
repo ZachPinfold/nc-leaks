@@ -99,13 +99,14 @@ describe("/API", () => {
         body: "this really was a great read for sure",
       })
       .expect(201)
-      .then(({ body }) => {
-
-        expect(body.article[0].comment_id).toBe(19)
-        expect(body.article[0].author).toBe('butter_bridge')
-        expect(body.article[0].article_id).toBe(1)
-        expect(body.article[0].votes).toBe(0)
-        expect(body.article[0].body).toBe("this really was a great read for sure")
+      .then(({body}) => {
+       const {comment} = body
+        expect(comment[0].comment_id).toBe(19)
+        expect(comment[0].author).toBe('butter_bridge')
+        expect(comment[0].article_id).toBe(1)
+        expect(comment[0].votes).toBe(0)
+        expect(comment[0].created_at).not.toBe("Invalid Date")
+        expect(comment[0].body).toBe("this really was a great read for sure")
       });
   });
 });

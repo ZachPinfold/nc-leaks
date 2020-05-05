@@ -24,8 +24,7 @@ exports.postComment = (req, res, next) => {
     const {article_id} = req.params
     const commentData = req.body
     postCommentByArticleId(article_id, commentData).then((comment) => {
-        // console.log(comment)
         res.status(201)
-        res.send({article})
+        res.send(comment)
     })
 }
