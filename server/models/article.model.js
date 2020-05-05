@@ -24,3 +24,16 @@ exports.patchArticleVoteById = (article_id, votes) => {
         return {article}
     })
 }
+
+exports.postCommentByArticleId = (article_id, commentData) => {
+    const {username, body} = commentData
+    let date = new Date()
+    return connection
+    .into('comments')
+    .insert([{author: username, body: body, article_id: article_id, created_at: date}])
+
+    // .returning('*')
+    .then((comment) => {
+        console.log(comment)
+    })
+}

@@ -6,7 +6,6 @@ const connection = require("../server/connection");
 // beforeEach(()=> connection.seed.run())
 
 describe("/API", () => {
-
   // BASELINE TESTING
 
   afterAll(() => {
@@ -64,12 +63,16 @@ describe("/API", () => {
         .expect(200)
         .then(({ body }) => {
           expect(body.article[0].article_id).toBe(1);
-          expect(body.article[0].title).toBe('Living in the shadow of a great man');
-          expect(body.article[0].body).toBe("I find this existence challenging");
+          expect(body.article[0].title).toBe(
+            "Living in the shadow of a great man"
+          );
+          expect(body.article[0].body).toBe(
+            "I find this existence challenging"
+          );
           expect(body.article[0].votes).toBe(100);
-          expect(body.article[0].topic).toBe('mitch');
+          expect(body.article[0].topic).toBe("mitch");
           expect(body.article[0].author).toBe("butter_bridge");
-          expect(body.article[0].comment_count).toBe('13');
+          expect(body.article[0].comment_count).toBe("13");
         });
     });
   });
@@ -78,22 +81,31 @@ describe("/API", () => {
 
   test("200 patch article votes by article id", () => {
     return request(app)
-    .patch("/api/article/1")
-    .send({ inc_votes : 50 })
-    .expect(200)
-    .then(({body}) => {
-      expect(body.article[0].votes).toBe(150);
-    })
+      .patch("/api/article/1")
+      .send({ inc_votes: 50 })
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.article[0].votes).toBe(150);
+      });
   });
 
-});
+  // post comment to article by article ID
 
-// {
-//     article_id: 1,
-//     title: 'Living in the shadow of a great man',
-//     body: 'I find this existence challenging',
-//     votes: 100,
-//     topic: 'mitch',
-//     author: 'butter_bridge',
-//     created_at: '2018-11-15T12:21:54.171+00:00'
-//   }
+  test("201 Adds a new comment to an article by article id", () => {
+    return request(app)
+      .post("/api/article/1/comments")
+      .send({
+        username: "butter_bridge",
+        body: "this really was a great read for sure",
+      })
+      .expect(201)
+      .then(({ body }) => {
+
+        expect(body.article[0].comment_id).toBe(19)
+        expect(body.article[0].author).toBe('butter_bridge')
+        expect(body.article[0].article_id).toBe(1)
+        expect(body.article[0].votes).toBe(0)
+        expect(body.article[0].body).toBe("this really was a great read for sure")
+      });
+  });
+});

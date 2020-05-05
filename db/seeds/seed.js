@@ -17,7 +17,7 @@ exports.seed = function (knex) {
       // .then((article) => {console.log(article)})
     })
     .then((articleRows) => {
-      // console.log(articleRows)
+      // console.log(articleRows[0])
       const newCommentTimeData = formatDates(commentData);
 
       const articleRef = makeRefObj(articleRows, "article_id", "title");
@@ -33,6 +33,6 @@ exports.seed = function (knex) {
       return knex("comments").insert(formattedComments).returning("*");
     })
     .then((comment) => {
-      // console.log(comment);
+      // console.log(comment[0]);
     });
 };
