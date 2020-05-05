@@ -71,6 +71,19 @@ describe("/API", () => {
         });
     });
   });
+
+  // patch article by id
+
+  test.only("200 patch article votes by article id", () => {
+    return request(app)
+    .patch("/api/article/1")
+    .send({ inc_votes : 50 })
+    .expect(200)
+    .then(({body}) => {
+      expect(body.votes).toEqual(150);
+    })
+  });
+
 });
 
 // {

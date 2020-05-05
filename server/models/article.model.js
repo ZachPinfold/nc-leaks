@@ -14,3 +14,14 @@ exports.selectArticleById = (article_id) => {
        return articleData[0]
     });
 };
+
+exports.patchArticleVoteById = (article_id, votes) => {
+    return connection('articles')
+    // .update({votes})
+    .where({article_id})
+    .increment('votes', 10)
+    .returning('*')
+    .then((article) => {
+        console.log(article)
+    })
+}

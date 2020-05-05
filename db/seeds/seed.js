@@ -14,6 +14,7 @@ exports.seed = function (knex) {
     .then(() => {
       const newArticleData = formatDates(articleData);
       return knex.insert(newArticleData).into("articles").returning("*")
+      // .then((article) => {console.log(article)})
     })
     .then((articleRows) => {
       // console.log(articleRows)
@@ -32,6 +33,6 @@ exports.seed = function (knex) {
       return knex("comments").insert(formattedComments).returning("*");
     })
     .then((comment) => {
-      console.log(comment);
+      // console.log(comment);
     });
 };
