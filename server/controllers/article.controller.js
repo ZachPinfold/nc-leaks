@@ -5,7 +5,7 @@ exports.getArticles = (req, res, next) => {
     selectArticleById(article_id).then(({article}) => {
         // conso
         res.status(200)
-        res.send(article[0])
+    res.send({article})
     })
 }
 
@@ -16,6 +16,6 @@ exports.patchArticle = (req, res, next) => {
         const {votes} = article[0]
         // console.log(votes)
         res.status(200)
-        res.send(article[0])
+        res.send({article})
     })
 }

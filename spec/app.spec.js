@@ -29,7 +29,6 @@ describe("/API", () => {
         .get("/api/topics")
         .expect(200)
         .then(({ body }) => {
-          console.log(body)
           expect(Array.isArray(body.topics)).toEqual(true);
           body.topics.forEach((topic) => {
             expect(topic).toHaveProperty("slug");
@@ -64,26 +63,26 @@ describe("/API", () => {
         .get("/api/article/1")
         .expect(200)
         .then(({ body }) => {
-          expect(body.article_id).toBe(1);
-          expect(body.title).toBe('Living in the shadow of a great man');
-          expect(body.body).toBe("I find this existence challenging");
-          expect(body.votes).toBe(100);
-          expect(body.topic).toBe('mitch');
-          expect(body.author).toBe("butter_bridge");
-          expect(body.comment_count).toBe('13');
+          expect(body.article[0].article_id).toBe(1);
+          expect(body.article[0].title).toBe('Living in the shadow of a great man');
+          expect(body.article[0].body).toBe("I find this existence challenging");
+          expect(body.article[0].votes).toBe(100);
+          expect(body.article[0].topic).toBe('mitch');
+          expect(body.article[0].author).toBe("butter_bridge");
+          expect(body.article[0].comment_count).toBe('13');
         });
     });
   });
 
   // patch article by id
 
-  test.only("200 patch article votes by article id", () => {
+  test("200 patch article votes by article id", () => {
     return request(app)
     .patch("/api/article/1")
     .send({ inc_votes : 50 })
     .expect(200)
     .then(({body}) => {
-      expect(body.votes).toBe(150);
+      expect(body.article[0].votes).toBe(150);
     })
   });
 
