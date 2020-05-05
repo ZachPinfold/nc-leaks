@@ -109,4 +109,53 @@ describe("/API", () => {
         expect(comment[0].body).toBe("this really was a great read for sure")
       });
   });
+
+  // get comments by article id
+
+  test('200 Get all the available comments by its id', () => {
+    return request(app)
+    .get("/api/article/9/comments")
+    .expect(200)
+    .then(({body}) => {
+      body.comments.forEach((comment) => {
+        expect(comment).toHaveProperty("comment_id");
+        expect(comment).toHaveProperty("author");
+        expect(comment).toHaveProperty("votes");
+        expect(comment).toHaveProperty("body");
+        expect(comment).toHaveProperty("created_at");
+      });
+    })
+  });
+
+  // get comments by article id & SORT BY A VALID COLUMN
+
+  test('200 responds with an array of all the articles comments sorted by created at (newest first)', () => {
+    return request(app)
+    .get("/api/article/1/comments")
+    .expect(200)
+    .then(({body}) => {
+     expect(body.comments).toBeSortedBy('created_at', {
+       descending: true,
+      //  coerce: true
+     });
+    })
+  });
+
+
+  // get comments by article id & SORT BY A VALID ASC/DESC QUERY
+
+  test('200 responds with an array of all the articles comments sorted by a valid query ASC/DESC', () => {
+    return request(app)
+    .get("/api/article/1/comments?order=asc")
+    .expect(200)
+    .then(({body}) => {
+     expect(body.comments).toBeSortedBy('created_at', {
+       descending: false,
+      //  coerce: true
+     });
+    })
+  });
+
 });
+
+

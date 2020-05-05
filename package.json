@@ -12,7 +12,6 @@
     "migrate-rollback": "NODE_ENV=test knex migrate:rollback",
     "seed-dev": "npm run migrate-rollback && npm run migrate-latest && knex seed:run",
     "seed-test": "NODE_ENV=test npm run migrate-rollback &&  NODE_ENV=test npm run migrate-latest &&  NODE_ENV=test knex seed:run"
-
   },
   "repository": {
     "type": "git",
@@ -29,8 +28,14 @@
   "devDependencies": {
     "express": "^4.17.1",
     "jest": "^25.5.4",
+    "jest-sorted": "^1.0.6",
     "knex": "^0.21.1",
     "pg": "^8.0.3",
     "supertest": "^4.0.2"
+  },
+  "jest": {
+    "setupFilesAfterEnv": [
+      "jest-sorted"
+    ]
   }
 }

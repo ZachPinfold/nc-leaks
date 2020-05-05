@@ -33,6 +33,6 @@ exports.seed = function (knex) {
       return knex("comments").insert(formattedComments).returning("*");
     })
     .then((comment) => {
-      // console.log(comment[0]);
+      // console.log(comment[16]);
     });
 };

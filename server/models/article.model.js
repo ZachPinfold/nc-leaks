@@ -36,3 +36,16 @@ exports.postCommentByArticleId = (article_id, commentData) => {
         return {comment}
     })
 }
+
+exports.getCommentsByArticleId = (article_id, order = 'desc') => {
+    console.log(order)
+    return connection
+    .select('comment_id', 'author', 'votes', 'created_at', 'body')
+    .from('comments')
+    .where('article_id', article_id)
+    .orderBy('created_at', order)
+    .returning('*')
+    .then((comments) => {
+        return {comments}
+    })
+}
