@@ -6,5 +6,7 @@ exports.patchComments = (req, res, next) => {
     updateCommentVoteById(comment_id, inc_votes).then((comment) => {
     res.status(200)
     res.send(comment)
+    }).catch((err)=> {
+        next(err)
     })
 }
