@@ -278,23 +278,35 @@ describe("/API", () => {
     });
 
   });
+
     // COMMENTS TESTS
 
-    // Patch existing comments with an updated vote count
+    // Patch existing comments with an updated (increased/decreased) vote count
 
     describe('/Comments', () => {
       
-    test("PATCH 200 patch article votes by comment id", () => {
+    test("PATCH 200 patch increase comment votes by comment id", () => {
       return request(app)
-        .patch("/api/comments/1")
+        .patch("/api/comments/3")
         .send({ inc_votes: 50 })
         .expect(200)
         .then(({ body }) => {
-          console.log(body)
-          expect(body.article[0].votes).toBe(150);
+          expect(Array.isArray(body.comment)).toBe(true);
+          expect(body.comment[0].votes).toBe(150);
         });
     });
+
+    test("PATCH 200 patch decrease comment votes by comment id", () => {
+      return request(app)
+        .patch("/api/comments/3")
+        .send({ inc_votes: -50 })
+        .expect(200)
+        .then(({ body }) => {
+          expect(Array.isArray(body.comment)).toBe(true);
+          expect(body.comment[0].votes).toBe(50);
+        });
+    });
+
+
   });
-
-
 });
