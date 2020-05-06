@@ -58,7 +58,11 @@ exports.getCommentsByArticleId = (article_id, order = "desc") => {
     .orderBy("created_at", order)
     .returning("*")
     .then((comments) => {
-      if (comments.length === 0){
+      if (order !== 'desc' && order !== 'asc') {
+        return Promise.reject({status: 400, msg: 'not an input'})
+      } 
+      else 
+      if (comments.length === 0) {
         return Promise.reject({status: 404, msg: 'related article not found'})
       }
       return { comments };

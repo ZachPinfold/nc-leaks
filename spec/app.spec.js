@@ -266,6 +266,9 @@ describe('GET /api/articles/:article_id/comments', () => {
 
   // get comments by article id & sort by deafult (created_at)
 
+describe('GET /api/articles/:article_id/comments SORT BY DEFAULT CREATED AT', () => {
+  
+
   test("GET 200 responds with an array of all the articles comments sorted by created at (newest first)", () => {
     return request(app)
       .get("/api/article/1/comments")
@@ -278,6 +281,10 @@ describe('GET /api/articles/:article_id/comments', () => {
         });
       });
   });
+
+});
+
+describe('GET /api/articles/:article_id/comments SORT BY ASC/DESC based on order query', () => {
 
   // get comments by article id & SORT BY A VALID ASC/DESC QUERY
 
@@ -293,6 +300,19 @@ describe('GET /api/articles/:article_id/comments', () => {
         });
       });
   });
+
+  // Error handling for when an incorrect sort-by query is made
+
+  test('400 - when incorrect route is specified, returns 404 and incorrect message on treasure', () => {
+    return request(app)
+    .get("/api/article/1/comments?order=notcorrect")
+    .expect(400)
+    .then((body) => {
+        expect(body.body.msg).toBe("not an input");
+    })
+});
+
+});
 
   // Add a sort_by new valid column 
 
