@@ -10,21 +10,25 @@ exports.selectArticleById = (article_id) => {
     .groupBy("articles.article_id")
     .returning("*")
     .then((article) => {
+      if (article.length === 0){
+        return Promise.reject({status: 404, msg: 'article not found'})
+      }
       return { article };
     });
 };
 
 exports.patchArticleVoteById = (article_id, votes) => {
-  return (
-    connection("articles")
+  return connection("articles")
       // .update({votes})
       .where({ article_id })
       .increment("votes", votes)
       .returning("*")
       .then((article) => {
+        if (article.length === 0){
+          return Promise.reject({status: 404, msg: 'article not found'})
+        }
         return { article };
       })
-  );
 };
 
 exports.postCommentByArticleId = (article_id, commentData) => {

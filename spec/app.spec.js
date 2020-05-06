@@ -7,12 +7,15 @@ beforeEach(()=> connection.migrate.rollback())
 beforeEach(()=> connection.migrate.latest())
 beforeEach(()=> connection.seed.run())
 
-describe("/API", () => {
+describe("/TESTING", () => {
   // BASELINE TESTING
 
   afterAll(() => {
     return connection.destroy();
   });
+
+describe('/api', () => {
+
   test("200 should return that the base route endpoint is working", () => {
     return request(app)
       .get("/api")
@@ -21,6 +24,19 @@ describe("/API", () => {
         expect(body.msg).toEqual("api is up and running ok");
       });
   });
+
+  // API ERRORS
+
+  test('404 - when incorrect route is specified, returns 404 and incorrect message', () => {
+    return request(app)
+    .get('/wrongURL')
+    .expect(404)
+    .then((respond)=> {
+        expect(respond.body.msg).toEqual('resource not found');
+    })
+});
+
+});
 
   // TOPICS TESTING
 
@@ -37,11 +53,26 @@ describe("/API", () => {
           });
         });
     });
+
+    // TOPICS ERROR TESTING
+
+    test('404 - when incorrect route is specified, returns 404 and incorrect message', () => {
+      return request(app)
+      .get('/api/wrongURL')
+      .expect(404)
+      .then((respond)=> {
+          expect(respond.body.msg).toEqual('resource not found');
+      })
   });
+
+
+  });
+
 
   // USERS TESTING
 
   describe("/users", () => {
+
     test("200 should return with a specific user", () => {
       return request(app)
         .get("/api/users/butter_bridge")
@@ -55,6 +86,18 @@ describe("/API", () => {
           expect(body.users[0].name).toBe("jonny");
         });
     });
+
+    // USER ERROR TESTING
+
+    test('404 - when incorrect route is specified, returns 404 and incorrect message', () => {
+      return request(app)
+      .get('/api/users/not-a-user')
+      .expect(404)
+      .then((respond)=> {
+          expect(respond.body.msg).toEqual('user not found');
+      })
+  });
+
   });
 
   // ARTICLE TESTING
@@ -81,6 +124,17 @@ describe("/API", () => {
         });
     });
 
+    // ARTICLE ERROR TESTING - GET ARTICLE BY ID
+
+    test('404 - when incorrect route is specified, returns 404 and incorrect message', () => {
+      return request(app)
+      .get("/api/article/5000")
+      .expect(404)
+      .then((respond)=> {
+          expect(respond.body.msg).toEqual('article not found');
+      })
+  });
+
   // patch article by id
 
   test("PATCH 200 patch article votes by article id (increase)", () => {
@@ -105,6 +159,17 @@ describe("/API", () => {
       });
   });
 
+
+  // ARTICLE ERROR TESTING - PATCH ARTICLE BY ID
+
+    test('404 - when incorrect route is specified, returns 404 and incorrect message', () => {
+      return request(app)
+      .patch("/api/article/5000")
+      .expect(404)
+      .then((respond)=> {
+          expect(respond.body.msg).toEqual('article not found');
+      })
+  });
 
   // post comment to article by article ID
 

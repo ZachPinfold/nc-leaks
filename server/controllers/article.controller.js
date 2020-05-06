@@ -3,9 +3,10 @@ const {selectArticleById, patchArticleVoteById, postCommentByArticleId, getComme
 exports.getArticles = (req, res, next) => {
     const {article_id} = req.params
     selectArticleById(article_id).then(({article}) => {
-        // conso
         res.status(200)
-    res.send({article})
+        res.send({article})
+    }).catch((err) => {
+        next(err)
     })
 }
 
@@ -17,6 +18,8 @@ exports.patchArticle = (req, res, next) => {
         // console.log(votes)
         res.status(200)
         res.send({article})
+    }).catch((err)=> {
+        next(err)
     })
 }
 
