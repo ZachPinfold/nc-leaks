@@ -17,7 +17,7 @@ exports.removeCommentById = (comment_id) => {
     return connection('comments')
     .where({comment_id})
     .del()
-    .then(() => {
-        return
+    .then((commentCount) => {
+        if (commentCount === 0) return Promise.reject({status: 404, msg: 'comment not found'})
     })
 }

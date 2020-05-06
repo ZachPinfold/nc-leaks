@@ -531,7 +531,17 @@ describe("/TESTING", () => {
         return request(app)
         .del('/api/comments/1')
         .expect(204)
+      })
+
+      test('DELETE 404 - comment id is non-existent', () => {
+        return request(app)
+        .del('/api/comments/5000')
+        .expect(404)
+        .then((respond) => {
+          expect(respond.body.msg).toEqual('comment not found');
+        })
       });
+
     });
   });
 });
