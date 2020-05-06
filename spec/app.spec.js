@@ -481,27 +481,27 @@ describe("/TESTING", () => {
   // Patch existing comments with an updated (increased/decreased) vote count
 
   describe("/Comments", () => {
-    test("PATCH 200 patch increase comment votes by comment id", () => {
-      return request(app)
-        .patch("/api/comments/3")
-        .send({ inc_votes: 50 })
-        .expect(200)
-        .then(({ body }) => {
-          expect(Array.isArray(body.comment)).toBe(true);
-          expect(body.comment[0].votes).toBe(150);
-        });
-    });
+    describe("PATCH /api/comments/:comment_id", () => {
+      test("PATCH 200 patch increase comment votes by comment id", () => {
+        return request(app)
+          .patch("/api/comments/3")
+          .send({ inc_votes: 50 })
+          .expect(200)
+          .then(({ body }) => {
+            expect(Array.isArray(body.comment)).toBe(true);
+            expect(body.comment[0].votes).toBe(150);
+          });
+      });
 
-    test("PATCH 200 patch decrease comment votes by comment id", () => {
-      return request(app)
-        .patch("/api/comments/3")
-        .send({ inc_votes: -50 })
-        .expect(200)
-        .then(({ body }) => {
-          expect(Array.isArray(body.comment)).toBe(true);
-          expect(body.comment[0].votes).toBe(50);
-        });
-    
+      test("PATCH 200 patch decrease comment votes by comment id", () => {
+        return request(app)
+          .patch("/api/comments/3")
+          .send({ inc_votes: -50 })
+          .expect(200)
+          .then(({ body }) => {
+            expect(Array.isArray(body.comment)).toBe(true);
+            expect(body.comment[0].votes).toBe(50);
+          });
       });
 
       // Error handling for the comment vote updating
@@ -524,6 +524,14 @@ describe("/TESTING", () => {
             expect(respond.body.msg).toEqual("bad request");
           });
       });
-  
     });
+
+    describe("DELETE /api/comments/:comment_id", () => {
+      test("DELETE 204 - Removes comment by id", () => {
+        return request(app)
+        .del('/api/comments/1')
+        .expect(204)
+      });
+    });
+  });
 });

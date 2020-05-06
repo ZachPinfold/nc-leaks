@@ -10,6 +10,7 @@ exports.selectArticleById = (article_id) => {
     .groupBy("articles.article_id")
     .returning("*")
     .then((article) => {
+      // console.log(arti)
       if (article.length === 0){
         return Promise.reject({status: 404, msg: 'article not found'})
       }

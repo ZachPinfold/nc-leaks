@@ -12,3 +12,12 @@ exports.updateCommentVoteById = (comment_id, inc_votes) => {
         return {comment}
     })
 }
+
+exports.removeCommentById = (comment_id) => {
+    return connection('comments')
+    .where({comment_id})
+    .del()
+    .then(() => {
+        return
+    })
+}
