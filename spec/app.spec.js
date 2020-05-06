@@ -207,9 +207,9 @@ describe("/TESTING", () => {
       test("POST 404 - when incorrect route is specified at api/article/!/comments, returns 404 and incorrect message", () => {
         return request(app)
           .post("/api/article/50000/comments")
-          .expect(404)
+          .expect(400)
           .then((respond) => {
-            expect(respond.body.msg).toEqual("related article not found");
+            expect(respond.body.msg).toEqual("bad request");
           });
       });
     });

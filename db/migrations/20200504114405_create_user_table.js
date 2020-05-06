@@ -4,7 +4,7 @@ exports.up = function(knex) {
         usersTable.text("username").primary()
         // usersTable.unique("username");
         usersTable.text("avatar_url");
-        usersTable.text('name')
+        usersTable.text('name').notNullable()
       });
     };
 
