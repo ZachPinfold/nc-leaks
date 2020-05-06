@@ -47,11 +47,12 @@ describe("/API", () => {
         .get("/api/users/butter_bridge")
         .expect(200)
         .then(({ body }) => {
-          expect(body.username).toBe("butter_bridge");
-          expect(body.avatar_url).toBe(
+          expect(Array.isArray(body.users)).toBe(true);
+          expect(body.users[0].username).toBe("butter_bridge");
+          expect(body.users[0].avatar_url).toBe(
             "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
           );
-          expect(body.name).toBe("jonny");
+          expect(body.users[0].name).toBe("jonny");
         });
     });
   });
@@ -65,6 +66,7 @@ describe("/API", () => {
         .expect(200)
         .then(({ body }) => {
           // more simple response
+          expect(Array.isArray(body.article)).toBe(true);
           expect(body.article[0].article_id).toBe(1);
           expect(body.article[0].title).toBe(
             "Living in the shadow of a great man"
@@ -81,15 +83,28 @@ describe("/API", () => {
 
   // patch article by id
 
-  test("PATCH 200 patch article votes by article id", () => {
+  test("PATCH 200 patch article votes by article id (increase)", () => {
     return request(app)
       .patch("/api/article/1")
       .send({ inc_votes: 50 })
       .expect(200)
       .then(({ body }) => {
+        expect(Array.isArray(body.article)).toBe(true);
         expect(body.article[0].votes).toBe(150);
       });
   });
+
+  test("PATCH 200 patch article votes by article id(decrease)", () => {
+    return request(app)
+      .patch("/api/article/1")
+      .send({ inc_votes: -50 })
+      .expect(200)
+      .then(({ body }) => {
+        expect(Array.isArray(body.article)).toBe(true);
+        expect(body.article[0].votes).toBe(50);
+      });
+  });
+
 
   // post comment to article by article ID
 
@@ -102,6 +117,7 @@ describe("/API", () => {
       })
       .expect(201)
       .then(({ body }) => {
+        expect(Array.isArray(body.comment)).toBe(true);
         const { comment } = body;
         expect(comment[0].comment_id).toBe(19);
         expect(comment[0].author).toBe("butter_bridge");
@@ -119,6 +135,7 @@ describe("/API", () => {
       .get("/api/article/9/comments")
       .expect(200)
       .then(({ body }) => {
+        expect(Array.isArray(body.comments)).toBe(true);
         body.comments.forEach((comment) => {
           expect(comment).toHaveProperty("comment_id");
           expect(comment).toHaveProperty("author");
@@ -136,6 +153,7 @@ describe("/API", () => {
       .get("/api/article/1/comments")
       .expect(200)
       .then(({ body }) => {
+        expect(Array.isArray(body.comments)).toBe(true);
         expect(body.comments).toBeSortedBy("created_at", {
           descending: true,
           //  coerce: true
@@ -150,6 +168,7 @@ describe("/API", () => {
       .get("/api/article/1/comments?order=asc")
       .expect(200)
       .then(({ body }) => {
+        expect(Array.isArray(body.comments)).toBe(true);
         expect(body.comments).toBeSortedBy("created_at", {
           descending: false,
           //  coerce: true
@@ -306,7 +325,6 @@ describe("/API", () => {
           expect(body.comment[0].votes).toBe(50);
         });
     });
-
 
   });
 });

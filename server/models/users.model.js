@@ -6,7 +6,7 @@ exports.selectUsernameById = (username) => {
     .from('users')
     .where('username', username)
     .returning('*')
-    .then((data) => {
-        return data[0]
+    .then((users) => {
+        return {users}
     })
 }
