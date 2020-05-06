@@ -88,6 +88,8 @@ describe("makeRefObj", () => {
 });
 
 describe("formatComments", () => {
+
+  
   test("This utility function should be able to take an array of comment objects (comments) and a reference object, and return a new array of formatted comments.", () => {
     const articlArray = [  {
       article_id: 9,
@@ -141,4 +143,58 @@ describe("formatComments", () => {
     const format = formatComments(input, lookUpObj, 'belongs_to', 'article_id', 'created_by', 'author')
     expect(format).toEqual(output)
   });
+
+  test('should do the same as above, but with different data', () => {
+    const articlArray = [  {
+      article_id: 25,
+      title: "who's that giiiirl?",
+      body: 'Well? Think about it.',
+      votes: 0,
+      topic: 'music',
+      author: 'Eve',
+      created_at: '11/23/1986'
+    }, {
+      article_id: 30,
+      title: "Hit me baby one more time",
+      body: 'Well? Think about it.',
+      votes: 0,
+      topic: 'mitch',
+      author: 'Britney',
+      created_at: '11/23/1986'
+    }]
+
+
+    const lookUpObj = makeRefObj(articlArray, 'article_id', 'title')
+
+
+    const input = [{
+      body: "song lyrics for who's that girl!",
+      belongs_to: "who's that giiiirl?",
+      created_by: 'Eve',
+      votes: 16,
+    }, {
+      body: "Different song lyrics",
+      belongs_to: "Hit me baby one more time",
+      created_by: 'Britney',
+      votes: 16,
+    }]
+
+    const output = [{
+        article_id: 25,
+        body:
+        "song lyrics for who's that girl!",
+        votes: 16,
+        author: "Eve",
+      },
+      {
+        article_id: 30,
+        body:
+       'Different song lyrics',
+        votes: 16,
+        author: "Britney",
+    }]
+    const format = formatComments(input, lookUpObj, 'belongs_to', 'article_id', 'created_by', 'author')
+    expect(format).toEqual(output)
+  });
+
 });
