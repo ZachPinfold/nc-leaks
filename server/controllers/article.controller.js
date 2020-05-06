@@ -34,8 +34,9 @@ exports.postComment = (req, res, next) => {
 
 exports.getComments = (req, res, next) => {
     const {article_id} = req.params
+    const {sort_by} = req.query
     const {order} = req.query
-    getCommentsByArticleId(article_id, order).then((comments) => {
+    getCommentsByArticleId(article_id, order, sort_by).then((comments) => {
         res.status(200)
         res.send(comments)
     }).catch((err)=> {

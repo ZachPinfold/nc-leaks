@@ -253,6 +253,13 @@ describe("/TESTING", () => {
           .get("/api/article/1/comments")
           .expect(200)
           .then(({ body }) => {
+            body.comments.forEach((comment) => {
+              expect(comment).toHaveProperty('comment_id');
+              expect(comment).toHaveProperty('author');
+              expect(comment).toHaveProperty('votes');
+              expect(comment).toHaveProperty('created_at');
+              expect(comment).toHaveProperty('body');
+            })
             expect(Array.isArray(body.comments)).toBe(true);
             expect(body.comments).toBeSortedBy("created_at", {
               descending: true,
@@ -293,6 +300,35 @@ describe("/TESTING", () => {
     // Add a sort_by new valid column //
     //
     //
+    
+  describe('GET sort array by a sort_by valid column (', () => {
+    
+
+    test("GET 200 should change up the order sort by, with a viable column", () => {
+      return request(app)
+        .get("/api/article/1/comments?sort_by=votes")
+        .expect(200)
+        .then(({ body }) => {
+          expect(Array.isArray(body.comments)).toBe(true);
+          expect(body.comments).toBeSortedBy("votes", {
+            descending: true,
+            // coerce: true,
+          });
+        });
+    });
+
+    // Error testing for the sort_by being incorrect
+
+    test("GET 400 - when incorrect query is specified for sort_by, returns 400 and incorrect message", () => {
+      return request(app)
+        .get("/api/article/1/comments?sort_by=noturl")
+        .expect(400)
+        .then((body) => {
+          expect(body.body.msg).toBe("bad request");
+        });
+    });
+  });
+
     //
 
     // get all articles

@@ -50,12 +50,14 @@ exports.postCommentByArticleId = (article_id, commentData) => {
     });
 };
 
-exports.getCommentsByArticleId = (article_id, order = "desc") => {
+
+
+exports.getCommentsByArticleId = (article_id, order = "desc", sort_by = 'created_at') => {
   return connection
     .select("comment_id", "author", "votes", "created_at", "body")
     .from("comments")
     .where("article_id", article_id)
-    .orderBy("created_at", order)
+    .orderBy(sort_by, order)
     .returning("*")
     .then((comments) => {
       if (order !== 'desc' && order !== 'asc') {
@@ -68,6 +70,8 @@ exports.getCommentsByArticleId = (article_id, order = "desc") => {
       return { comments };
     });
 };
+
+
 
 exports.fetchAllArticles = (order = 'desc', sort_by = 'created_at', username, topic) => {
   return connection
