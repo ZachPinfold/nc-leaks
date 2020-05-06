@@ -52,5 +52,7 @@ exports.getAllArticles = (req, res, next) => {
     fetchAllArticles(order, sort_by, username, topic).then((articles)=> {
         res.status(200)
         res.send(articles)
+    }).catch((err) => {
+        next(err)
     })
 }

@@ -59,7 +59,7 @@ exports.getCommentsByArticleId = (article_id, order = "desc") => {
     .returning("*")
     .then((comments) => {
       if (order !== 'desc' && order !== 'asc') {
-        return Promise.reject({status: 400, msg: 'not an input'})
+        return Promise.reject({status: 400, msg: 'bad request'})
       } 
       else 
       if (comments.length === 0) {
@@ -90,6 +90,9 @@ exports.fetchAllArticles = (order = 'desc', sort_by = 'created_at', username, to
     })
     .returning("*")
     .then((articles) => {
+      if (order !== 'desc' && order !== 'asc') {
+        return Promise.reject({status: 400, msg: 'bad request'})
+      } 
         return {articles}
     });
 };

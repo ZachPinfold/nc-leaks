@@ -187,7 +187,7 @@ describe('/api', () => {
     .send({ inc_votes: 'not-a-number' })
     .expect(400)
     .then((respond)=> {
-        expect(respond.body.msg).toEqual('incorrect input');
+        expect(respond.body.msg).toEqual('bad request');
     })
 });
 
@@ -308,15 +308,22 @@ describe('GET /api/articles/:article_id/comments SORT BY ASC/DESC based on order
     .get("/api/article/1/comments?order=notcorrect")
     .expect(400)
     .then((body) => {
-        expect(body.body.msg).toBe("not an input");
+        expect(body.body.msg).toBe("bad request");
     })
 });
 
+
 });
 
-  // Add a sort_by new valid column 
+  // Add a sort_by new valid column //
+  //
+  //
+  //
 
   // get all articles
+
+describe('GET /api/articles', () => {
+  
 
   test("GET 200 responds with an array of all the articles", () => {
     return request(app)
@@ -335,6 +342,18 @@ describe('GET /api/articles/:article_id/comments SORT BY ASC/DESC based on order
         });
       });
   });
+
+  // Error handling for api/article
+
+  test('404 - when incorrect route is specified, returns 404 and incorrect message', () => {
+    return request(app)
+    .get('/api/wrongURL')
+    .expect(404)
+    .then((respond)=> {
+        expect(respond.body.msg).toEqual('resource not found');
+    })
+});
+
 
   // Defaults sort-by articles to DATE in ascending order
 
@@ -366,7 +385,18 @@ describe('GET /api/articles/:article_id/comments SORT BY ASC/DESC based on order
       });
   });
 
-    // change the sort by to sort by a viable column
+  // Error hanlding for the changing of order
+
+  test('400 - when incorrect route is specified, returns 404 and incorrect message on treasure', () => {
+    return request(app)
+    .get("/api/article?order=notcorrect")
+    .expect(400)
+    .then((body) => {
+        expect(body.body.msg).toBe("bad request");
+    })
+});
+
+  // change the sort by to sort by a viable column
 
     test("GET 200 should change up the order sort by, with a viable column", () => {
       return request(app)
@@ -382,7 +412,17 @@ describe('GET /api/articles/:article_id/comments SORT BY ASC/DESC based on order
     });
 
 
-    // Filter the array by a specific username
+    test('400 - when incorrect route is specified, returns 404 and incorrect message on treasure', () => {
+      return request(app)
+      .get("/api/article?sort_by=notcorrect")
+      .expect(400)
+      .then((body) => {
+          expect(body.body.msg).toBe("bad request");
+      })
+  });
+
+
+  // Filter the array by a specific username
 
       test("GET 200 filter the article by a specific username (butter_bridge)", () => {
       return request(app)
@@ -408,7 +448,7 @@ describe('GET /api/articles/:article_id/comments SORT BY ASC/DESC based on order
         });
     });
 
-    // Filter the array by a specific topic
+  // Filter the array by a specific topic
 
     test("GET 200 filter the article by a specific topic (mitch)", () => {
       return request(app)
@@ -435,10 +475,12 @@ describe('GET /api/articles/:article_id/comments SORT BY ASC/DESC based on order
     });
 
   });
+  
+});
 
-    // COMMENTS TESTS
+  // COMMENTS TESTS
 
-    // Patch existing comments with an updated (increased/decreased) vote count
+  // Patch existing comments with an updated (increased/decreased) vote count
 
     describe('/Comments', () => {
       
