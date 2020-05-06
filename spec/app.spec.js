@@ -103,6 +103,10 @@ describe('/api', () => {
   // ARTICLE TESTING
 
   describe("/articles", () => {
+
+    describe('GET /api/articles/:article_id', () => {
+      
+
     test("GET 200 should return with a article by user id", () => {
       return request(app)
         .get("/api/article/1")
@@ -124,6 +128,7 @@ describe('/api', () => {
         });
     });
 
+
     // ARTICLE ERROR TESTING - GET ARTICLE BY ID
 
     test('404 - when incorrect route is specified, returns 404 and incorrect message', () => {
@@ -135,7 +140,12 @@ describe('/api', () => {
       })
   });
 
+});
+
   // patch article by id
+
+  describe('PATCH /api/articles/:article_id', () => {
+  
 
   test("PATCH 200 patch article votes by article id (increase)", () => {
     return request(app)
@@ -170,6 +180,18 @@ describe('/api', () => {
           expect(respond.body.msg).toEqual('article not found');
       })
   });
+
+  test('404 - When string is passed instead of numbers, should return with incorrect format', () => {
+    return request(app)
+    .patch("/api/article/1")
+    .send({ inc_votes: 'not-a-number' })
+    .expect(400)
+    .then((respond)=> {
+        expect(respond.body.msg).toEqual('incorrect input');
+    })
+});
+
+});
 
   // post comment to article by article ID
 
