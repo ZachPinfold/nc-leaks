@@ -23,8 +23,8 @@ exports.patchArticleVoteById = (article_id, votes) => {
       .where({ article_id })
       .increment("votes", votes)
       .returning("*")
-      .then((article) => {
-        if (article.length === 0){
+      .then(([article]) => {
+        if (article === undefined){
           return Promise.reject({status: 404, msg: 'article not found'})
         }
         return { article };
@@ -45,7 +45,7 @@ exports.postCommentByArticleId = (article_id, commentData) => {
       },
     ])
     .returning("*")
-    .then((comment) => {
+    .then(([comment]) => {
       return { comment };
     });
 };

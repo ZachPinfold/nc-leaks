@@ -138,8 +138,8 @@ describe("/TESTING", () => {
           .send({ inc_votes: 50 })
           .expect(200)
           .then(({ body }) => {
-            expect(Array.isArray(body.article)).toBe(true);
-            expect(body.article[0].votes).toBe(150);
+            expect(Array.isArray(body.article)).toBe(false);
+            expect(body.article.votes).toBe(150);
           });
       });
 
@@ -149,8 +149,8 @@ describe("/TESTING", () => {
           .send({ inc_votes: -50 })
           .expect(200)
           .then(({ body }) => {
-            expect(Array.isArray(body.article)).toBe(true);
-            expect(body.article[0].votes).toBe(50);
+            expect(Array.isArray(body.article)).toBe(false);
+            expect(body.article.votes).toBe(50);
           });
       });
 
@@ -188,14 +188,14 @@ describe("/TESTING", () => {
           })
           .expect(201)
           .then(({ body }) => {
-            expect(Array.isArray(body.comment)).toBe(true);
+            expect(Array.isArray(body.comment)).toBe(false);
             const { comment } = body;
-            expect(comment[0].comment_id).toBe(19);
-            expect(comment[0].author).toBe("butter_bridge");
-            expect(comment[0].article_id).toBe(1);
-            expect(comment[0].votes).toBe(0);
-            expect(comment[0].created_at).not.toBe("Invalid Date");
-            expect(comment[0].body).toBe(
+            expect(comment.comment_id).toBe(19);
+            expect(comment.author).toBe("butter_bridge");
+            expect(comment.article_id).toBe(1);
+            expect(comment.votes).toBe(0);
+            expect(comment.created_at).not.toBe("Invalid Date");
+            expect(comment.body).toBe(
               "this really was a great read for sure"
             );
           });
@@ -487,8 +487,8 @@ describe("/TESTING", () => {
           .send({ inc_votes: 50 })
           .expect(200)
           .then(({ body }) => {
-            expect(Array.isArray(body.comment)).toBe(true);
-            expect(body.comment[0].votes).toBe(150);
+            expect(Array.isArray(body.comment)).toBe(false);
+            expect(body.comment.votes).toBe(150);
           });
       });
 
@@ -498,8 +498,8 @@ describe("/TESTING", () => {
           .send({ inc_votes: -50 })
           .expect(200)
           .then(({ body }) => {
-            expect(Array.isArray(body.comment)).toBe(true);
-            expect(body.comment[0].votes).toBe(50);
+            expect(Array.isArray(body.comment)).toBe(false);
+            expect(body.comment.votes).toBe(50);
           });
       });
 

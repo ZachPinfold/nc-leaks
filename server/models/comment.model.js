@@ -5,8 +5,8 @@ exports.updateCommentVoteById = (comment_id, inc_votes) => {
     .where({comment_id})
     .increment('votes', inc_votes)
     .returning('*')
-    .then((comment) => {
-        if (comment.length === 0)   {
+    .then(([comment]) => {
+        if (comment === undefined)   {
             return Promise.reject({status: 404, msg: 'comment not found'})
         }
         return {comment}

@@ -14,7 +14,6 @@ exports.patchArticle = (req, res, next) => {
     const {article_id} = req.params
     const votes = req.body.inc_votes
     patchArticleVoteById(article_id, votes).then(({article}) => {
-        const {votes} = article[0]
         res.status(200)
         res.send({article})
     }).catch((err)=> {
