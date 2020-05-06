@@ -9,9 +9,8 @@ exports.selectArticleById = (article_id) => {
     .where("articles.article_id", article_id)
     .groupBy("articles.article_id")
     .returning("*")
-    .then((article) => {
-      // console.log(arti)
-      if (article.length === 0){
+    .then(([article]) => {
+      if (article === undefined){
         return Promise.reject({status: 404, msg: 'article not found'})
       }
       return { article };

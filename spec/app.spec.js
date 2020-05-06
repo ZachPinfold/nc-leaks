@@ -72,12 +72,12 @@ describe("/TESTING", () => {
         .get("/api/users/butter_bridge")
         .expect(200)
         .then(({ body }) => {
-          expect(Array.isArray(body.users)).toBe(true);
-          expect(body.users[0].username).toBe("butter_bridge");
-          expect(body.users[0].avatar_url).toBe(
+          expect(Array.isArray(body.user)).toBe(false);
+          expect(body.user.username).toBe("butter_bridge");
+          expect(body.user.avatar_url).toBe(
             "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
           );
-          expect(body.users[0].name).toBe("jonny");
+          expect(body.user.name).toBe("jonny");
         });
     });
 
@@ -97,24 +97,23 @@ describe("/TESTING", () => {
 
   describe("/articles", () => {
     describe("GET /api/articles/:article_id", () => {
-      test("GET 200 should return with a article by user id", () => {
+      test("GET 200 should return with an article by article id", () => {
         return request(app)
           .get("/api/article/1")
           .expect(200)
           .then(({ body }) => {
-            // more simple response
-            expect(Array.isArray(body.article)).toBe(true);
-            expect(body.article[0].article_id).toBe(1);
-            expect(body.article[0].title).toBe(
+            expect(Array.isArray(body.article)).toBe(false);
+            expect(body.article.article_id).toBe(1);
+            expect(body.article.title).toBe(
               "Living in the shadow of a great man"
             );
-            expect(body.article[0].body).toBe(
+            expect(body.article.body).toBe(
               "I find this existence challenging"
             );
-            expect(body.article[0].votes).toBe(100);
-            expect(body.article[0].topic).toBe("mitch");
-            expect(body.article[0].author).toBe("butter_bridge");
-            expect(body.article[0].comment_count).toBe("13");
+            expect(body.article.votes).toBe(100);
+            expect(body.article.topic).toBe("mitch");
+            expect(body.article.author).toBe("butter_bridge");
+            expect(body.article.comment_count).toBe("13");
           });
       });
 
@@ -541,7 +540,6 @@ describe("/TESTING", () => {
           expect(respond.body.msg).toEqual('comment not found');
         })
       });
-
     });
   });
 });
