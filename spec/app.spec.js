@@ -181,7 +181,7 @@ describe('/api', () => {
       })
   });
 
-  test('404 - When string is passed instead of numbers, should return with incorrect format', () => {
+  test('400 - When string is passed instead of numbers, should return with incorrect format', () => {
     return request(app)
     .patch("/api/article/1")
     .send({ inc_votes: 'not-a-number' })
@@ -194,6 +194,9 @@ describe('/api', () => {
 });
 
   // post comment to article by article ID
+
+  describe('POST /api/articles/:article_id/comments', () => {
+    
 
   test("POST 201 Adds a new comment to an article by article id", () => {
     return request(app)
@@ -215,13 +218,30 @@ describe('/api', () => {
       });
   });
 
+  // POST COMMENT TO ARTICLE ERROR HANDLER
+
+  test('404 - when incorrect route is specified, returns 404 and incorrect message', () => {
+    return request(app)
+    .post("/api/article/50000/comments")
+    .expect(404)
+    .then((respond)=> {
+        expect(respond.body.msg).toEqual('related article not found');
+    })
+});
+
+});
+
   // get comments by article id
+
+describe('GET /api/articles/:article_id/comments', () => {
+
 
   test("GET 200 Get all the available comments by its id", () => {
     return request(app)
       .get("/api/article/9/comments")
       .expect(200)
       .then(({ body }) => {
+        expect(body.comments.length).toBe(2)
         expect(Array.isArray(body.comments)).toBe(true);
         body.comments.forEach((comment) => {
           expect(comment).toHaveProperty("comment_id");
@@ -232,6 +252,17 @@ describe('/api', () => {
         });
       });
   });
+
+  test('404 - when incorrect route is specified, returns 404 and incorrect message', () => {
+    return request(app)
+    .get("/api/article/50000/comments")
+    .expect(404)
+    .then((respond)=> {
+        expect(respond.body.msg).toEqual('related article not found');
+    })
+});
+
+});
 
   // get comments by article id & sort by deafult (created_at)
 
