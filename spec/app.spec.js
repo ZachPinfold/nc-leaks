@@ -27,7 +27,7 @@ describe('/api', () => {
 
   // API ERRORS
 
-  test('404 - when incorrect route is specified, returns 404 and incorrect message', () => {
+  test('GET 404 - when incorrect route is specified at /!, returns 404 and incorrect message', () => {
     return request(app)
     .get('/wrongURL')
     .expect(404)
@@ -56,7 +56,7 @@ describe('/api', () => {
 
     // TOPICS ERROR TESTING
 
-    test('404 - when incorrect route is specified, returns 404 and incorrect message', () => {
+    test('GET 404 - when incorrect route is specified on api/!, returns 404 and incorrect message', () => {
       return request(app)
       .get('/api/wrongURL')
       .expect(404)
@@ -89,7 +89,7 @@ describe('/api', () => {
 
     // USER ERROR TESTING
 
-    test('404 - when incorrect route is specified, returns 404 and incorrect message', () => {
+    test('GET 404 - when incorrect route is specified on api/users/!, returns 404 and incorrect message', () => {
       return request(app)
       .get('/api/users/not-a-user')
       .expect(404)
@@ -131,7 +131,7 @@ describe('/api', () => {
 
     // ARTICLE ERROR TESTING - GET ARTICLE BY ID
 
-    test('404 - when incorrect route is specified, returns 404 and incorrect message', () => {
+    test('GET 404 - when article id cannot be found at api/article/!, returns 404 and incorrect message', () => {
       return request(app)
       .get("/api/article/5000")
       .expect(404)
@@ -172,7 +172,7 @@ describe('/api', () => {
 
   // ARTICLE ERROR TESTING - PATCH ARTICLE BY ID
 
-    test('404 - when incorrect route is specified, returns 404 and incorrect message', () => {
+    test('PATCH 404 - when patching and incorrect url is posted at api/article/!, returns 404 and incorrect message', () => {
       return request(app)
       .patch("/api/article/5000")
       .expect(404)
@@ -181,7 +181,7 @@ describe('/api', () => {
       })
   });
 
-  test('400 - When string is passed instead of numbers, should return with incorrect format', () => {
+  test('PATCH 400 - When string is passed instead of numbers, should return with incorrect format', () => {
     return request(app)
     .patch("/api/article/1")
     .send({ inc_votes: 'not-a-number' })
@@ -220,7 +220,7 @@ describe('/api', () => {
 
   // POST COMMENT TO ARTICLE ERROR HANDLER
 
-  test('404 - when incorrect route is specified, returns 404 and incorrect message', () => {
+  test('POST 404 - when incorrect route is specified at api/article/!/comments, returns 404 and incorrect message', () => {
     return request(app)
     .post("/api/article/50000/comments")
     .expect(404)
@@ -253,7 +253,9 @@ describe('GET /api/articles/:article_id/comments', () => {
       });
   });
 
-  test('404 - when incorrect route is specified, returns 404 and incorrect message', () => {
+  // Error handling for get comments by id
+
+  test('GET 404 - when incorrect route is specified at api/article/!/comments, returns 404 and incorrect message', () => {
     return request(app)
     .get("/api/article/50000/comments")
     .expect(404)
@@ -303,7 +305,7 @@ describe('GET /api/articles/:article_id/comments SORT BY ASC/DESC based on order
 
   // Error handling for when an incorrect sort-by query is made
 
-  test('400 - when incorrect route is specified, returns 404 and incorrect message on treasure', () => {
+  test('GET 400 - when query is incorrect when changing order, returns 400 and incorrect message', () => {
     return request(app)
     .get("/api/article/1/comments?order=notcorrect")
     .expect(400)
@@ -345,7 +347,7 @@ describe('GET /api/articles', () => {
 
   // Error handling for api/article
 
-  test('404 - when incorrect route is specified, returns 404 and incorrect message', () => {
+  test('GET 404 - when incorrect url is specified at api/!, returns 404 and incorrect message', () => {
     return request(app)
     .get('/api/wrongURL')
     .expect(404)
@@ -354,6 +356,10 @@ describe('GET /api/articles', () => {
     })
 });
 
+describe('GET /api/articles & set queries', () => {
+  
+describe('set order & sort by', () => {
+  
 
   // Defaults sort-by articles to DATE in ascending order
 
@@ -387,7 +393,7 @@ describe('GET /api/articles', () => {
 
   // Error hanlding for the changing of order
 
-  test('400 - when incorrect route is specified, returns 404 and incorrect message on treasure', () => {
+  test('GET 400 - when query is incorrect to change order, returns 400 and incorrect message', () => {
     return request(app)
     .get("/api/article?order=notcorrect")
     .expect(400)
@@ -411,8 +417,9 @@ describe('GET /api/articles', () => {
         });
     });
 
+  // Error testing for the sort_by being incorrect
 
-    test('400 - when incorrect route is specified, returns 404 and incorrect message on treasure', () => {
+    test('GET 400 - when incorrect query is specified for sort_by, returns 400 and incorrect message', () => {
       return request(app)
       .get("/api/article?sort_by=notcorrect")
       .expect(400)
@@ -421,6 +428,9 @@ describe('GET /api/articles', () => {
       })
   });
 
+});
+
+describe('set filtering by specific query', () => {
 
   // Filter the array by a specific username
 
@@ -448,6 +458,17 @@ describe('GET /api/articles', () => {
         });
     });
 
+  // Error testing for the filter query being incorrect
+
+    test('GET 400 - when incorrect query is made for sort_by, returns 400 and incorrect message', () => {
+      return request(app)
+      .get("/api/article?sort_by=notcorrect")
+      .expect(400)
+      .then((body) => {
+          expect(body.body.msg).toBe("bad request");
+      })
+  });
+
   // Filter the array by a specific topic
 
     test("GET 200 filter the article by a specific topic (mitch)", () => {
@@ -474,10 +495,23 @@ describe('GET /api/articles', () => {
         });
     });
 
+  // Error testing for the filter query being incorrect
+
+  test('GET 404 - when incorrect query is made for filter-by topic, returns 404 and incorrect message', () => {
+    return request(app)
+    .get("/api/article?topic=notcorrect")
+    .expect(404)
+    .then((body) => {
+        expect(body.body.msg).toBe("topic not found");
+    })
+});
+
   });
   
 });
 
+});
+});
   // COMMENTS TESTS
 
   // Patch existing comments with an updated (increased/decreased) vote count

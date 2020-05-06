@@ -93,6 +93,9 @@ exports.fetchAllArticles = (order = 'desc', sort_by = 'created_at', username, to
       if (order !== 'desc' && order !== 'asc') {
         return Promise.reject({status: 400, msg: 'bad request'})
       } 
+      if (articles.length === 0) {
+        return Promise.reject({status: 404, msg: 'topic not found'})
+      }
         return {articles}
     });
 };
