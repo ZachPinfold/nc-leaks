@@ -1,6 +1,7 @@
 const connection = require("../connection");
 
 exports.updateCommentVoteById = (comment_id, inc_votes) => {
+    if (!inc_votes) return Promise.reject({status: 400, msg: 'bad request'})
     return connection('comments')
     .where({comment_id})
     .increment('votes', inc_votes)

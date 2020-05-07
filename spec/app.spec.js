@@ -103,6 +103,16 @@ describe("/TESTING", () => {
           expect(respond.body.msg).toEqual("user not found");
         });
     });
+
+    test("GET 405 - invalid method", () => {
+      return request(app)
+        .patch("/api/users/butter_bridge")
+        .expect(405)
+        .then((respond) => {
+          expect(respond.body.msg).toEqual("invalid method");
+        });
+    });
+
   });
 
   // ARTICLE TESTING
@@ -528,6 +538,7 @@ describe("/TESTING", () => {
   // Patch existing comments with an updated (increased/decreased) vote count
 
   describe("/Comments", () => {
+
     describe("PATCH /api/comments/:comment_id", () => {
       test("PATCH 200 patch increase comment votes by comment id", () => {
         return request(app)
@@ -556,6 +567,7 @@ describe("/TESTING", () => {
       test("PATCH 404 - when patching and incorrect url is posted at api/comments/!, returns 404 and incorrect message", () => {
         return request(app)
           .patch("/api/comments/5000")
+          .send({ inc_votes: 50 })
           .expect(404)
           .then((respond) => {
             expect(respond.body.msg).toEqual("comment not found");
@@ -571,6 +583,26 @@ describe("/TESTING", () => {
             expect(respond.body.msg).toEqual("bad request");
           });
       });
+
+      test('PATCH 400 - return a 400 for missing vote input', () => {
+        return request(app)
+        .patch('/api/comments/1')
+        .send({})
+        .expect(400)
+        .then((respond)=> {
+          expect(respond.body.msg).toEqual("bad request");
+        })
+      });
+
+      test("405 - invalid method", () => {
+        return request(app)
+          .post("/api/comments/1")
+          .expect(405)
+          .then((respond) => {
+            expect(respond.body.msg).toEqual("invalid method");
+          });
+      });
+
     });
 
     describe("DELETE /api/comments/:comment_id", () => {
