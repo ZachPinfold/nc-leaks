@@ -62,7 +62,19 @@ describe("/TESTING", () => {
           expect(respond.body.msg).toEqual("resource not found");
         });
     });
+
+
+  test("GET 405 - invalid method", () => {
+    return request(app)
+      .patch("/api/topics")
+      .expect(405)
+      .then((respond) => {
+        expect(respond.body.msg).toEqual("invalid method");
+      });
   });
+});
+
+  
 
   // USERS TESTING
 
@@ -99,7 +111,7 @@ describe("/TESTING", () => {
     describe("GET /api/articles/:article_id", () => {
       test("GET 200 should return with an article by article id", () => {
         return request(app)
-          .get("/api/article/1")
+          .get("/api/articles/1")
           .expect(200)
           .then(({ body }) => {
             expect(Array.isArray(body.article)).toBe(false);
@@ -121,7 +133,7 @@ describe("/TESTING", () => {
 
       test("GET 404 - when article id cannot be found at api/article/!, returns 404 and incorrect message", () => {
         return request(app)
-          .get("/api/article/5000")
+          .get("/api/articles/5000")
           .expect(404)
           .then((respond) => {
             expect(respond.body.msg).toEqual("article not found");
@@ -134,7 +146,7 @@ describe("/TESTING", () => {
     describe("PATCH /api/articles/:article_id", () => {
       test("PATCH 200 patch article votes by article id (increase)", () => {
         return request(app)
-          .patch("/api/article/1")
+          .patch("/api/articles/1")
           .send({ inc_votes: 50 })
           .expect(200)
           .then(({ body }) => {
@@ -145,7 +157,7 @@ describe("/TESTING", () => {
 
       test("PATCH 200 patch article votes by article id(decrease)", () => {
         return request(app)
-          .patch("/api/article/1")
+          .patch("/api/articles/1")
           .send({ inc_votes: -50 })
           .expect(200)
           .then(({ body }) => {
@@ -158,7 +170,7 @@ describe("/TESTING", () => {
 
       test("PATCH 404 - when patching and incorrect url is posted at api/article/!, returns 404 and incorrect message", () => {
         return request(app)
-          .patch("/api/article/5000")
+          .patch("/api/articles/5000")
           .expect(404)
           .then((respond) => {
             expect(respond.body.msg).toEqual("article not found");
@@ -167,7 +179,7 @@ describe("/TESTING", () => {
 
       test("PATCH 400 - When string is passed instead of numbers, should return with incorrect format", () => {
         return request(app)
-          .patch("/api/article/1")
+          .patch("/api/articles/1")
           .send({ inc_votes: "not-a-number" })
           .expect(400)
           .then((respond) => {
@@ -181,7 +193,7 @@ describe("/TESTING", () => {
     describe("POST /api/articles/:article_id/comments", () => {
       test("POST 201 Adds a new comment to an article by article id", () => {
         return request(app)
-          .post("/api/article/1/comments")
+          .post("/api/articles/1/comments")
           .send({
             username: "butter_bridge",
             body: "this really was a great read for sure",
@@ -205,7 +217,7 @@ describe("/TESTING", () => {
 
       test("POST 404 - when incorrect route is specified at api/article/!/comments, returns 404 and incorrect message", () => {
         return request(app)
-          .post("/api/article/50000/comments")
+          .post("/api/articles/50000/comments")
           .expect(400)
           .then((respond) => {
             expect(respond.body.msg).toEqual("bad request");
@@ -218,7 +230,7 @@ describe("/TESTING", () => {
     describe("GET /api/articles/:article_id/comments", () => {
       test("GET 200 Get all the available comments by its id", () => {
         return request(app)
-          .get("/api/article/9/comments")
+          .get("/api/articles/9/comments")
           .expect(200)
           .then(({ body }) => {
             expect(body.comments.length).toBe(2);
@@ -237,7 +249,7 @@ describe("/TESTING", () => {
 
       test("GET 404 - when incorrect route is specified at api/article/!/comments, returns 404 and incorrect message", () => {
         return request(app)
-          .get("/api/article/50000/comments")
+          .get("/api/articles/50000/comments")
           .expect(404)
           .then((respond) => {
             expect(respond.body.msg).toEqual("related article not found");
@@ -250,7 +262,7 @@ describe("/TESTING", () => {
     describe("GET /api/articles/:article_id/comments SORT BY DEFAULT CREATED AT", () => {
       test("GET 200 responds with an array of all the articles comments sorted by created at (newest first)", () => {
         return request(app)
-          .get("/api/article/1/comments")
+          .get("/api/articles/1/comments")
           .expect(200)
           .then(({ body }) => {
             body.comments.forEach((comment) => {
@@ -274,7 +286,7 @@ describe("/TESTING", () => {
 
       test("GET 200 responds with an array of all the articles comments sorted by a valid query ASC/DESC", () => {
         return request(app)
-          .get("/api/article/1/comments?order=asc")
+          .get("/api/articles/1/comments?order=asc")
           .expect(200)
           .then(({ body }) => {
             expect(Array.isArray(body.comments)).toBe(true);
@@ -289,7 +301,7 @@ describe("/TESTING", () => {
 
       test("GET 400 - when query is incorrect when changing order, returns 400 and incorrect message", () => {
         return request(app)
-          .get("/api/article/1/comments?order=notcorrect")
+          .get("/api/articles/1/comments?order=notcorrect")
           .expect(400)
           .then((body) => {
             expect(body.body.msg).toBe("bad request");
@@ -306,7 +318,7 @@ describe("/TESTING", () => {
 
     test("GET 200 should change up the order sort by, with a viable column", () => {
       return request(app)
-        .get("/api/article/1/comments?sort_by=votes")
+        .get("/api/articles/1/comments?sort_by=votes")
         .expect(200)
         .then(({ body }) => {
           expect(Array.isArray(body.comments)).toBe(true);
@@ -321,7 +333,7 @@ describe("/TESTING", () => {
 
     test("GET 400 - when incorrect query is specified for sort_by, returns 400 and incorrect message", () => {
       return request(app)
-        .get("/api/article/1/comments?sort_by=noturl")
+        .get("/api/articles/1/comments?sort_by=noturl")
         .expect(400)
         .then((body) => {
           expect(body.body.msg).toBe("bad request");
@@ -336,7 +348,7 @@ describe("/TESTING", () => {
     describe("GET /api/articles", () => {
       test("GET 200 responds with an array of all the articles", () => {
         return request(app)
-          .get("/api/article")
+          .get("/api/articles")
           .expect(200)
           .then(({ body }) => {
             expect(Array.isArray(body.articles)).toBe(true);
@@ -369,7 +381,7 @@ describe("/TESTING", () => {
 
           test("GET 200 responds with an array of all the articles sorted by a default (DATE)", () => {
             return request(app)
-              .get("/api/article")
+              .get("/api/articles")
               .expect(200)
               .then(({ body }) => {
                 expect(Array.isArray(body.articles)).toBe(true);
@@ -384,7 +396,7 @@ describe("/TESTING", () => {
 
           test("GET 200 should switch up the order to asc based on the query", () => {
             return request(app)
-              .get("/api/article?order=asc")
+              .get("/api/articles?order=asc")
               .expect(200)
               .then(({ body }) => {
                 expect(Array.isArray(body.articles)).toBe(true);
@@ -399,7 +411,7 @@ describe("/TESTING", () => {
 
           test("GET 400 - when query is incorrect to change order, returns 400 and incorrect message", () => {
             return request(app)
-              .get("/api/article?order=notcorrect")
+              .get("/api/articles?order=notcorrect")
               .expect(400)
               .then((body) => {
                 expect(body.body.msg).toBe("bad request");
@@ -410,7 +422,7 @@ describe("/TESTING", () => {
 
           test("GET 200 should change up the order sort by, with a viable column", () => {
             return request(app)
-              .get("/api/article?sort_by=comment_count")
+              .get("/api/articles?sort_by=comment_count")
               .expect(200)
               .then(({ body }) => {
                 expect(Array.isArray(body.articles)).toBe(true);
@@ -425,7 +437,7 @@ describe("/TESTING", () => {
 
           test("GET 400 - when incorrect query is specified for sort_by, returns 400 and incorrect message", () => {
             return request(app)
-              .get("/api/article?sort_by=notcorrect")
+              .get("/api/articles?sort_by=notcorrect")
               .expect(400)
               .then((body) => {
                 expect(body.body.msg).toBe("bad request");
@@ -438,7 +450,7 @@ describe("/TESTING", () => {
 
           test("GET 200 filter the article by a specific username (butter_bridge)", () => {
             return request(app)
-              .get("/api/article?username=butter_bridge")
+              .get("/api/articles?username=butter_bridge")
               .expect(200)
               .then(({ body }) => {
                 expect(Array.isArray(body.articles)).toBe(true);
@@ -450,7 +462,7 @@ describe("/TESTING", () => {
 
           test("GET 200 filter the article by a specific username (icellusedkars)", () => {
             return request(app)
-              .get("/api/article?username=icellusedkars")
+              .get("/api/articles?username=icellusedkars")
               .expect(200)
               .then(({ body }) => {
                 expect(Array.isArray(body.articles)).toBe(true);
@@ -464,7 +476,7 @@ describe("/TESTING", () => {
 
           test("GET 400 - when incorrect query is made for sort_by, returns 400 and incorrect message", () => {
             return request(app)
-              .get("/api/article?sort_by=notcorrect")
+              .get("/api/articles?sort_by=notcorrect")
               .expect(400)
               .then((body) => {
                 expect(body.body.msg).toBe("bad request");
@@ -475,7 +487,7 @@ describe("/TESTING", () => {
 
           test("GET 200 filter the article by a specific topic (mitch)", () => {
             return request(app)
-              .get("/api/article?topic=mitch")
+              .get("/api/articles?topic=mitch")
               .expect(200)
               .then(({ body }) => {
                 expect(Array.isArray(body.articles)).toBe(true);
@@ -487,7 +499,7 @@ describe("/TESTING", () => {
 
           test("GET 200 filter the article by a specific topic (cats)", () => {
             return request(app)
-              .get("/api/article?topic=cats")
+              .get("/api/articles?topic=cats")
               .expect(200)
               .then(({ body }) => {
                 expect(Array.isArray(body.articles)).toBe(true);
@@ -501,7 +513,7 @@ describe("/TESTING", () => {
 
           test("GET 404 - when incorrect query is made for filter-by topic, returns 404 and incorrect message", () => {
             return request(app)
-              .get("/api/article?topic=notcorrect")
+              .get("/api/articles?topic=notcorrect")
               .expect(404)
               .then((body) => {
                 expect(body.body.msg).toBe("topic not found");

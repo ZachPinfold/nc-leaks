@@ -12,7 +12,7 @@ apiRouter.get("/", (req, res, next) => {
 
 apiRouter.use('/topics', topicsRouter)
 apiRouter.use('/users', fromUsers)
-apiRouter.use('/article', articlesRouter)
+apiRouter.use('/articles', articlesRouter)
 apiRouter.use('/comments', commentsRouter)
 
 module.exports = apiRouter;

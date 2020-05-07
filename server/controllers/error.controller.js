@@ -2,15 +2,19 @@ exports.send404 = (req, res, next) => {
   res.status(404).send({ msg: "resource not found" });
 };
 
+exports.send405 = (req, res, next) => {
+  res.status(405).send({ msg: "invalid method" });
+};
+
 exports.handlePSQLErrors = (err, req, res, next) => {
-  if (err.code === '22P02') {
+  if (err.code === "22P02") {
     res.status(400).send({ msg: "bad request" });
-  } else if (err.code === '23503') {
-    res.status(404).send({msg: 'related article not found'})
-  } else if (err.code === '42703') {
-    res.status(400).send({msg: 'bad request'})
-  } else if (err.code === '23502') {
-    res.status(400).send({msg: 'bad request'})
+  } else if (err.code === "23503") {
+    res.status(404).send({ msg: "related article not found" });
+  } else if (err.code === "42703") {
+    res.status(400).send({ msg: "bad request" });
+  } else if (err.code === "23502") {
+    res.status(400).send({ msg: "bad request" });
   } else {
     next(err);
   }

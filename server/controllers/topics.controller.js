@@ -4,5 +4,7 @@ exports.getTopics = (req, res, next) => {
     selectTopics().then((topics) => {
         res.status(200)
         res.send({topics})
+    }).catch((err)=> {
+        next(err)
     })
 }
