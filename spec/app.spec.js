@@ -39,7 +39,7 @@ describe("/TESTING", () => {
   // TOPICS TESTING
 
   describe("/topics", () => {
-    test("200 should return an array of all the topics", () => {
+    test("GET 200 should return an array of all the topics", () => {
       return request(app)
         .get("/api/topics")
         .expect(200)
@@ -52,6 +52,17 @@ describe("/TESTING", () => {
         });
     });
 
+    test('GET 200 shoudl return a topic by id', () => {
+      return request(app)
+      .get('/api/topics/mitch')
+      .expect(200)
+      .then(({body}) => {
+        expect(Array.isArray(body.topic)).toEqual(false);
+        expect(body.topic).toHaveProperty("slug");
+        expect(body.topic).toHaveProperty("description");
+      })
+    });
+    
     // TOPICS ERROR TESTING
 
     test("GET 404 - when incorrect route is specified on api/!, returns 404 and incorrect message", () => {
@@ -60,6 +71,15 @@ describe("/TESTING", () => {
         .expect(404)
         .then((respond) => {
           expect(respond.body.msg).toEqual("resource not found");
+        });
+    });
+
+    test("GET 404 - when topic doesn't exist", () => {
+      return request(app)
+        .get("/api/topics/wrongtopic")
+        .expect(404)
+        .then((respond) => {
+          expect(respond.body.msg).toEqual("topic not found");
         });
     });
 
@@ -100,7 +120,7 @@ describe("/TESTING", () => {
         .get("/api/users/not-a-user")
         .expect(404)
         .then((respond) => {
-          expect(respond.body.msg).toEqual("user not found");
+          expect(respond.body.msg).toEqual("author not found");
         });
     });
 
@@ -319,9 +339,7 @@ describe("/TESTING", () => {
       });
     });
 
-    // Add a sort_by new valid column //
-    //
-    //
+
     
   describe('GET sort array by a sort_by valid column (', () => {
     
@@ -356,6 +374,7 @@ describe("/TESTING", () => {
     // get all articles
 
     describe("GET /api/articles", () => {
+
       test("GET 200 responds with an array of all the articles", () => {
         return request(app)
           .get("/api/articles")
@@ -386,6 +405,7 @@ describe("/TESTING", () => {
       });
 
       describe("GET /api/articles & set queries", () => {
+
         describe("set order & sort by", () => {
           // Defaults sort-by articles to DATE in ascending order
 
@@ -456,11 +476,11 @@ describe("/TESTING", () => {
         });
 
         describe("set filtering by specific query", () => {
-          // Filter the array by a specific username
+          // Filter the array by a specific username 
 
           test("GET 200 filter the article by a specific username (butter_bridge)", () => {
             return request(app)
-              .get("/api/articles?username=butter_bridge")
+              .get("/api/articles?author=butter_bridge")
               .expect(200)
               .then(({ body }) => {
                 expect(Array.isArray(body.articles)).toBe(true);
@@ -472,7 +492,7 @@ describe("/TESTING", () => {
 
           test("GET 200 filter the article by a specific username (icellusedkars)", () => {
             return request(app)
-              .get("/api/articles?username=icellusedkars")
+              .get("/api/articles?author=icellusedkars")
               .expect(200)
               .then(({ body }) => {
                 expect(Array.isArray(body.articles)).toBe(true);
@@ -484,12 +504,14 @@ describe("/TESTING", () => {
 
           // Error testing for the filter query being incorrect
 
-          test("GET 400 - when incorrect query is made for sort_by, returns 400 and incorrect message", () => {
+          test("GET 200 - when author exists, but no articles, return empty array", () => {
             return request(app)
-              .get("/api/articles?sort_by=notcorrect")
-              .expect(400)
-              .then((body) => {
-                expect(body.body.msg).toBe("bad request");
+              .get("/api/articles?author=lurker")
+              .expect(200)
+              .then(({ body }) => {
+
+                expect(Array.isArray(body.articles)).toBe(true);
+                expect(body.articles).toEqual([]);
               });
           });
 
@@ -519,16 +541,36 @@ describe("/TESTING", () => {
               });
           });
 
+          test("GET 200 returns an empty array when articles for a topic don't exist", () => {
+            return request(app)
+              .get("/api/articles?topic=paper")
+              .expect(200)
+              .then(({ body }) => {
+                expect(Array.isArray(body.articles)).toBe(true);
+                expect(body.articles).toEqual([]);
+              });
+          });
+
           // Error testing for the filter query being incorrect
 
-          test("GET 404 - when incorrect query is made for filter-by topic, returns 404 and incorrect message", () => {
+          test("GET 404 - when incorrect query is made for filter-by author, returns 404", () => {
             return request(app)
-              .get("/api/articles?topic=notcorrect")
+              .get("/api/articles?author=not-an-author")
+              .expect(404)
+              .then((body) => {
+                expect(body.body.msg).toBe("author not found");
+              });
+          });
+
+          test("GET 404 - when incorrect query is made for filter-by topic, returns 404", () => {
+            return request(app)
+              .get("/api/articles?topic=not-a-cat")
               .expect(404)
               .then((body) => {
                 expect(body.body.msg).toBe("topic not found");
               });
           });
+
         });
       });
     });

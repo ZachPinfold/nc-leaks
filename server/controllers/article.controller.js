@@ -1,4 +1,7 @@
 const {selectArticleById, patchArticleVoteById, postCommentByArticleId, getCommentsByArticleId, fetchAllArticles} = require('../models/article.model')
+const {selectUsernameById} = require('../models/users.model')
+const {selectTopicById} = require('../models/topics.model')
+
 
 exports.getArticles = (req, res, next) => {
     const {article_id} = req.params
@@ -47,12 +50,31 @@ exports.getComments = (req, res, next) => {
 exports.getAllArticles = (req, res, next) => {
     const {order} = req.query
     const {sort_by} = req.query
-    const {username} = req.query
+    const {author} = req.query
     const {topic} = req.query
-    fetchAllArticles(order, sort_by, username, topic).then((articles)=> {
+    const queries = [fetchAllArticles(order, sort_by, author, topic)]
+    if (author) queries.push(selectUsernameById(author))
+    if (topic) queries.push(selectTopicById(topic))
+    Promise.all(queries)
+    .then((results)=> {
+        const articles = results[0]
         res.status(200)
         res.send(articles)
     }).catch((err) => {
         next(err)
     })
 }
+
+
+// exports.getAllArticles = (req, res, next) => {
+//     const {order} = req.query
+//     const {sort_by} = req.query
+//     const {author} = req.query
+//     const {topic} = req.query
+//     fetchAllArticles(order, sort_by, author, topic).then((articles)=> {
+//         res.status(200)
+//         res.send(articles)
+//     }).catch((err) => {
+//         next(err)
+//     })
+// }

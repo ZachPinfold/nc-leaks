@@ -8,7 +8,7 @@ exports.selectUsernameById = (username) => {
     .returning('*')
     .then(([user]) => {
         if (user === undefined) {
-            return Promise.reject({status: 404, msg: 'user not found'})
+            return Promise.reject({status: 404, msg: 'author not found'})
         }
         return {user}
     })

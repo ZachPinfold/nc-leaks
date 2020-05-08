@@ -5,7 +5,7 @@ exports.selectArticleById = (article_id) => {
     .select("articles.*")
     .count("comments.comment_id as comment_count")
     .from("articles")
-    .join("comments", "articles.article_id", "=", "comments.article_id")
+    .leftJoin("comments", "articles.article_id", "=", "comments.article_id")
     .where("articles.article_id", article_id)
     .groupBy("articles.article_id")
     .returning("*")
@@ -73,7 +73,7 @@ exports.getCommentsByArticleId = (article_id, order = "desc", sort_by = 'created
 
 
 
-exports.fetchAllArticles = (order = 'desc', sort_by = 'created_at', username, topic) => {
+exports.fetchAllArticles = (order = 'desc', sort_by = 'created_at', author, topic) => {
   return connection
     .select(
       "articles.author",
@@ -89,7 +89,7 @@ exports.fetchAllArticles = (order = 'desc', sort_by = 'created_at', username, to
     .groupBy("articles.article_id")
     .orderBy(sort_by, order)
     .modify((query) => {
-      if (username) query.where('articles.author', username)
+      if (author)  query.where('articles.author', author)
       if (topic) query.where('articles.topic', topic)
     })
     .returning("*")
@@ -97,9 +97,9 @@ exports.fetchAllArticles = (order = 'desc', sort_by = 'created_at', username, to
       if (order !== 'desc' && order !== 'asc') {
         return Promise.reject({status: 400, msg: 'bad request'})
       } 
-      if (articles.length === 0) {
-        return Promise.reject({status: 404, msg: 'topic not found'})
-      }
+      // if (topic === undefined) {
+      //   return Promise.reject({status: 404, msg: 'topic not found'})
+      // }
         return {articles}
     });
 };
