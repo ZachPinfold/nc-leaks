@@ -39,9 +39,13 @@ exports.getComments = (req, res, next) => {
     const {article_id} = req.params
     const {sort_by} = req.query
     const {order} = req.query
-    getCommentsByArticleId(article_id, order, sort_by).then((comments) => {
+    const queries = [getCommentsByArticleId(article_id, order, sort_by)]
+    queries.push(selectArticleById(article_id))
+    Promise.all(queries)
+    .then((comments) => {
+        const result = comments[0]
         res.status(200)
-        res.send(comments)
+        res.send(result)
     }).catch((err)=> {
         next(err)
     })

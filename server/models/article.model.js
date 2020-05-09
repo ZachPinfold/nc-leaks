@@ -17,7 +17,7 @@ exports.selectArticleById = (article_id) => {
     });
 };
 
-exports.patchArticleVoteById = (article_id, votes) => {
+exports.patchArticleVoteById = (article_id, votes = 0) => {
   return connection("articles")
       // .update({votes})
       .where({ article_id })
@@ -26,6 +26,8 @@ exports.patchArticleVoteById = (article_id, votes) => {
       .then(([article]) => {
         if (article === undefined){
           return Promise.reject({status: 404, msg: 'article not found'})
+        } else if (votes === 0) {
+          return {article}
         }
         return { article };
       })
@@ -60,13 +62,13 @@ exports.getCommentsByArticleId = (article_id, order = "desc", sort_by = 'created
     .orderBy(sort_by, order)
     .returning("*")
     .then((comments) => {
+      // console.log(comments)
       if (order !== 'desc' && order !== 'asc') {
         return Promise.reject({status: 400, msg: 'bad request'})
       } 
-      else 
-      if (comments.length === 0) {
-        return Promise.reject({status: 404, msg: 'related article not found'})
-      }
+      // else if (comments.length === 0) {
+      //   return Promise.reject({status: 404, msg: 'related article not found'})
+      // }
       return { comments };
     });
 };

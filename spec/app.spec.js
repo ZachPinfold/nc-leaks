@@ -34,6 +34,16 @@ describe("/TESTING", () => {
           expect(respond.body.msg).toEqual("resource not found");
         });
     });
+
+    test("GET 405 - invalid method", () => {
+      return request(app)
+      .patch("/api")
+        .expect(405)
+        .then((respond) => {
+          expect(respond.body.msg).toEqual("invalid method");
+        });
+    });
+
   });
 
   // TOPICS TESTING
@@ -138,7 +148,29 @@ describe("/TESTING", () => {
   // ARTICLE TESTING
 
   describe("/articles", () => {
+
     describe("GET /api/articles/:article_id", () => {
+
+      test("GET 200 should return with an article by article id", () => {
+        return request(app)
+          .get("/api/articles/1")
+          .expect(200)
+          .then(({ body }) => {
+            expect(Array.isArray(body.article)).toBe(false);
+            expect(body.article.article_id).toBe(1);
+            expect(body.article.title).toBe(
+              "Living in the shadow of a great man"
+            );
+            expect(body.article.body).toBe(
+              "I find this existence challenging"
+            );
+            expect(body.article.votes).toBe(100);
+            expect(body.article.topic).toBe("mitch");
+            expect(body.article.author).toBe("butter_bridge");
+            expect(body.article.comment_count).toBe("13");
+          });
+      });
+
       test("GET 200 should return with an article by article id", () => {
         return request(app)
           .get("/api/articles/1")
@@ -169,8 +201,16 @@ describe("/TESTING", () => {
             expect(respond.body.msg).toEqual("article not found");
           });
       });
-    });
 
+    test("405 - invalid method", () => {
+      return request(app)
+        .put("/api/articles/1")
+        .expect(405)
+        .then((respond) => {
+          expect(respond.body.msg).toEqual("invalid method");
+        });
+    });
+  });
     // patch article by id
 
     describe("PATCH /api/articles/:article_id", () => {
@@ -207,15 +247,27 @@ describe("/TESTING", () => {
           });
       });
 
-      test("PATCH 400 - When string is passed instead of numbers, should return with incorrect format", () => {
+      // test("PATCH 400 - When string is passed instead of numbers, should return with incorrect format", () => {
+      //   return request(app)
+      //     .patch("/api/articles/1")
+      //     .send({ inc_votes: "not-a-number" })
+      //     .expect(400)
+      //     .then((respond) => {
+      //       expect(respond.body.msg).toEqual("bad request");
+      //     });
+      // });
+
+      test('a patch with no body should return the original article', () => {
         return request(app)
-          .patch("/api/articles/1")
-          .send({ inc_votes: "not-a-number" })
-          .expect(400)
-          .then((respond) => {
-            expect(respond.body.msg).toEqual("bad request");
-          });
+        .patch("/api/articles/1")
+        .send({})
+        .expect(200)
+        .then(({ body }) => {
+          expect(Array.isArray(body.article)).toBe(false);
+          expect(body.article.votes).toBe(100);
+        });
       });
+
     });
 
     // post comment to article by article ID
@@ -258,6 +310,8 @@ describe("/TESTING", () => {
     // get comments by article id
 
     describe("GET /api/articles/:article_id/comments", () => {
+
+
       test("GET 200 Get all the available comments by its id", () => {
         return request(app)
           .get("/api/articles/9/comments")
@@ -275,6 +329,16 @@ describe("/TESTING", () => {
           });
       });
 
+      test("GET 200 Get all the available comments by its id (even when there are no comments)", () => {
+        return request(app)
+          .get("/api/articles/2/comments")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.comments.length).toBe(0);
+            expect(Array.isArray(body.comments)).toBe(true);
+          });
+      });
+
       // Error handling for get comments by id
 
       test("GET 404 - when incorrect route is specified at api/article/!/comments, returns 404 and incorrect message", () => {
@@ -282,9 +346,19 @@ describe("/TESTING", () => {
           .get("/api/articles/50000/comments")
           .expect(404)
           .then((respond) => {
-            expect(respond.body.msg).toEqual("related article not found");
+            expect(respond.body.msg).toEqual("article not found");
           });
       });
+
+      test("405 - invalid method", () => {
+        return request(app)
+          .put("/api/articles/1/comments")
+          .expect(405)
+          .then((respond) => {
+            expect(respond.body.msg).toEqual("invalid method");
+          });
+      });
+
     });
 
     // get comments by article id & sort by deafult (created_at)
@@ -403,6 +477,10 @@ describe("/TESTING", () => {
             expect(respond.body.msg).toEqual("resource not found");
           });
       });
+      
+
+      
+      
 
       describe("GET /api/articles & set queries", () => {
 
@@ -604,6 +682,17 @@ describe("/TESTING", () => {
           });
       });
 
+      test('PATCH 200 - return a 200 for missing vote input', () => {
+        return request(app)
+        .patch('/api/comments/3')
+        .send({ inc_votes: 0 })
+        .expect(200)
+        .then(({ body }) => {
+          expect(Array.isArray(body.comment)).toBe(false);
+          expect(body.comment.votes).toBe(100);
+        });
+      });
+
       // Error handling for the comment vote updating
 
       test("PATCH 404 - when patching and incorrect url is posted at api/comments/!, returns 404 and incorrect message", () => {
@@ -626,15 +715,6 @@ describe("/TESTING", () => {
           });
       });
 
-      test('PATCH 400 - return a 400 for missing vote input', () => {
-        return request(app)
-        .patch('/api/comments/1')
-        .send({})
-        .expect(400)
-        .then((respond)=> {
-          expect(respond.body.msg).toEqual("bad request");
-        })
-      });
 
       test("405 - invalid method", () => {
         return request(app)
