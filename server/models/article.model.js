@@ -75,7 +75,7 @@ exports.getCommentsByArticleId = (article_id, order = "desc", sort_by = 'created
 
 
 
-exports.fetchAllArticles = (order = 'desc', sort_by = 'created_at', author, topic) => {
+exports.fetchAllArticles = (order = 'desc', sort_by = 'created_at', author, topic, limit = 10, p = 1) => {
   return connection
     .select(
       "articles.author",
@@ -90,6 +90,7 @@ exports.fetchAllArticles = (order = 'desc', sort_by = 'created_at', author, topi
     .leftJoin("comments", "articles.article_id", "=", "comments.article_id")
     .groupBy("articles.article_id")
     .orderBy(sort_by, order)
+    .limit(limit).offset(p*limit-limit)
     .modify((query) => {
       if (author)  query.where('articles.author', author)
       if (topic) query.where('articles.topic', topic)
@@ -105,3 +106,13 @@ exports.fetchAllArticles = (order = 'desc', sort_by = 'created_at', author, topi
         return {articles}
     });
 };
+
+exports.countAllArticles = () => {
+  return connection
+    .count('*')
+    .from('articles')
+    .returning('*')
+    .then((count)=> {
+      return count[0].count
+    })
+}

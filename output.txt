@@ -6,3 +6,13 @@ You are now connected to database "nc_news_test" as user "zachpinfold".
  paper | what books are made of
 (3 rows)
 
+ article_id |                title                |               body                | votes | topic |    author     |         created_at         | count 
+------------+-------------------------------------+-----------------------------------+-------+-------+---------------+----------------------------+-------
+          1 | Living in the shadow of a great man | I find this existence challenging |   100 | mitch | butter_bridge | 2018-11-15 12:21:54.171+00 |    13
+(1 row)
+
+ count 
+-------
+    12
+(1 row)
+

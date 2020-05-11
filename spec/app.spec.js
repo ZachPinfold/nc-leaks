@@ -659,6 +659,54 @@ describe("/TESTING", () => {
 
         });
       });
+
+      describe('GET /api/articles & pagnation', () => {
+
+
+        test("GET 200 should limit the number of articles shown by a number of responses (default 10)", () => {
+          return request(app)
+            .get("/api/articles?order=asc")
+            .expect(200)
+            .then(({ body }) => {
+              expect(Array.isArray(body.articles)).toBe(true);
+              expect(body.articles.length).toBe(10)
+            });
+        });
+
+        test("GET 200 should limit the number of articles shown by a number of responses (custom)", () => {
+          return request(app)
+            .get("/api/articles?limit=5")
+            .expect(200)
+            .then(({ body }) => {
+              expect(Array.isArray(body.articles)).toBe(true);
+              expect(body.articles.length).toBe(5)
+            });
+        });
+
+        test("GET 200 should set the page number by the p query", () => {
+          return request(app)
+            .get("/api/articles?p=2")
+            .expect(200)
+            .then(({ body }) => {
+              expect(Array.isArray(body.articles)).toBe(true);
+              expect(body.articles[0].article_id).toBe(11)
+            });
+        });
+
+        test("GET 200 should respond with a total article count (ignoring filters)", () => {
+          return request(app)
+            .get("/api/articles")
+            .expect(200)
+            .then(({ body }) => {
+              expect(Array.isArray(body.articles)).toBe(true);
+              body.articles.forEach((article) => {
+                expect(article.total_count).toEqual('12')
+              })
+            });
+        });
+
+      });
+
     });
   });
   // COMMENTS TESTS

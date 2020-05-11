@@ -1,4 +1,4 @@
-const {selectArticleById, patchArticleVoteById, postCommentByArticleId, getCommentsByArticleId, fetchAllArticles} = require('../models/article.model')
+const {selectArticleById, patchArticleVoteById, postCommentByArticleId, getCommentsByArticleId, fetchAllArticles, countAllArticles} = require('../models/article.model')
 const {selectUsernameById} = require('../models/users.model')
 const {selectTopicById} = require('../models/topics.model')
 
@@ -56,12 +56,19 @@ exports.getAllArticles = (req, res, next) => {
     const {sort_by} = req.query
     const {author} = req.query
     const {topic} = req.query
-    const queries = [fetchAllArticles(order, sort_by, author, topic)]
+    const {limit} = req.query
+    const {p} = req.query
+    const queries = [fetchAllArticles(order, sort_by, author, topic, limit, p), countAllArticles()]
     if (author) queries.push(selectUsernameById(author))
     if (topic) queries.push(selectTopicById(topic))
     Promise.all(queries)
     .then((results)=> {
+        const count = results[1]
         const articles = results[0]
+        articles.articles.map((article) => {
+            article.total_count = count
+            return article
+        })
         res.status(200)
         res.send(articles)
     }).catch((err) => {
