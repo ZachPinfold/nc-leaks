@@ -2,6 +2,7 @@ process.env.NODE_ENV = "test";
 const request = require("supertest");
 const app = require("../server/app");
 const connection = require("../server/connection");
+const endpoint = require('../endpoints.json')
 
 beforeEach(() => connection.migrate.rollback());
 beforeEach(() => connection.migrate.latest());
@@ -20,7 +21,7 @@ describe("/TESTING", () => {
         .get("/api")
         .expect(200)
         .then(({ body }) => {
-          expect(body.msg).toEqual("api is up and running ok");
+          expect(body).toEqual(endpoint);
         });
     });
 
