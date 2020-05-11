@@ -479,7 +479,14 @@ describe("/TESTING", () => {
       });
       
 
-      
+      test("GET 405 - invalid method", () => {
+        return request(app)
+          .patch("/api/articles")
+          .expect(405)
+          .then((respond) => {
+            expect(respond.body.msg).toEqual("invalid method");
+          });
+      });
       
 
       describe("GET /api/articles & set queries", () => {
