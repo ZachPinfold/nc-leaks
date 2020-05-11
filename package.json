@@ -4,6 +4,7 @@
   "description": "bc-nc-news",
   "main": "index.js",
   "scripts": {
+    "start": "node listen.js",
     "setup-dbs": "psql -f ./db/setup.sql",
     "test-utils": "jest spec/utils.spec.js",
     "test": "NODE_ENV=test npm run migrate-rollback &&  NODE_ENV=test npm run migrate-latest && NODE_ENV=test knex seed:run && NODE_ENV=test jest",
@@ -13,7 +14,10 @@
     "migrate-latest": "knex migrate:latest",
     "migrate-rollback": "knex migrate:rollback",
     "seed-dev": "npm run migrate-rollback && npm run migrate-latest && knex seed:run",
-    "seed-test": "NODE_ENV=test npm run migrate-rollback &&  NODE_ENV=test npm run migrate-latest &&  NODE_ENV=test knex seed:run"
+    "seed-test": "NODE_ENV=test npm run migrate-rollback &&  NODE_ENV=test npm run migrate-latest &&  NODE_ENV=test knex seed:run",
+    "seed:prod": "NODE_ENV=production DB_URL=$(heroku config:get DATABASE_URL) knex seed:run",
+    "migrate-latest:prod": "NODE_ENV=production DB_URL=$(heroku config:get DATABASE_URL) knex migrate:latest",
+    "migrate-rollback:prod": "NODE_ENV=production DB_URL=$(heroku config:get DATABASE_URL) knex migrate:rollback"
   },
   "repository": {
     "type": "git",
