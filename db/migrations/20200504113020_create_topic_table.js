@@ -3,6 +3,7 @@ exports.up = function (knex) {
     topicsTable.text("slug").primary();
     // topicsTable.unique("slug");
     topicsTable.text("description").notNullable();
+    topicsTable.text('color')
   });
 };
 
