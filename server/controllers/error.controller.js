@@ -11,7 +11,7 @@ exports.handlePSQLErrors = (err, req, res, next) => {
   if (err.code === "22P02") {
     res.status(400).send({ msg: "bad request" });
   } else if (err.code === "23503") {
-    res.status(404).send({ msg: "related article not found" });
+    res.status(404).send({ msg: "FOREIGN KEY VIOLATION" });
   } else if (err.code === "42703") {
     res.status(400).send({ msg: "bad request" });
   } else if (err.code === "23502") {

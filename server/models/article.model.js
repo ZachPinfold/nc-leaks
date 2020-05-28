@@ -33,9 +33,13 @@ exports.patchArticleVoteById = (article_id, votes = 0) => {
       })
 };
 
+// {"author": "butter_bridge", "body": "this is a comment", "article_id": "1"}
+
+// https://pinny-news.herokuapp.com/api/articles/1/comments
+
 exports.postCommentByArticleId = (article_id, commentData) => {
   const { username, body } = commentData;
-  let date = new Date();
+  // let date = new Date();
   return connection
     .into("comments")
     .insert([
@@ -43,7 +47,6 @@ exports.postCommentByArticleId = (article_id, commentData) => {
         author: username,
         body: body,
         article_id: article_id,
-        created_at: date,
       },
     ])
     .returning("*")
@@ -51,6 +54,7 @@ exports.postCommentByArticleId = (article_id, commentData) => {
       return { comment };
     });
 };
+
 
 
 
@@ -107,10 +111,14 @@ exports.fetchAllArticles = (order = 'desc', sort_by = 'created_at', author, topi
     });
 };
 
-exports.countAllArticles = () => {
+exports.countAllArticles = (author, topic) => {
   return connection
     .count('*')
     .from('articles')
+    .modify((query) => {
+      if (author)  query.where('articles.author', author)
+      if (topic) query.where('articles.topic', topic)
+    })
     .returning('*')
     .then((count)=> {
       return count[0].count

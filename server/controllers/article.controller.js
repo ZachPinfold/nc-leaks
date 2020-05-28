@@ -58,7 +58,7 @@ exports.getAllArticles = (req, res, next) => {
     const {topic} = req.query
     const {limit} = req.query
     const {p} = req.query
-    const queries = [fetchAllArticles(order, sort_by, author, topic, limit, p), countAllArticles()]
+    const queries = [fetchAllArticles(order, sort_by, author, topic, limit, p), countAllArticles(author, topic)]
     if (author) queries.push(selectUsernameById(author))
     if (topic) queries.push(selectTopicById(topic))
     Promise.all(queries)

@@ -705,6 +705,21 @@ describe("/TESTING", () => {
             });
         });
 
+        test.only("GET 200 should respond with a total article count (with filters)", () => {
+          return request(app)
+            .get("/api/articles?topic=cats")
+            .expect(200)
+            .then(({ body }) => {
+              expect(Array.isArray(body.articles)).toBe(true);
+              console.log(body)
+              body.articles.forEach((article) => {
+                expect(article.total_count).toEqual('1')
+              })
+            });
+        });
+
+
+
       });
 
     });
