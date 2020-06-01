@@ -203,6 +203,15 @@ describe("/TESTING", () => {
           });
       });
 
+      // test.only("GET 404 - when article id cannot be found at api/article/!, returns 404 and incorrect message", () => {
+      //   return request(app)
+      //     .get("/api/articles/hello")
+      //     .expect(404)
+      //     .then((respond) => {
+      //       expect(respond.body.msg).toEqual("article not found");
+      //     });
+      // });
+
     test("405 - invalid method", () => {
       return request(app)
         .put("/api/articles/1")
@@ -705,7 +714,7 @@ describe("/TESTING", () => {
             });
         });
 
-        test.only("GET 200 should respond with a total article count (with filters)", () => {
+        test("GET 200 should respond with a total article count (with filters)", () => {
           return request(app)
             .get("/api/articles?topic=cats")
             .expect(200)
