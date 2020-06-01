@@ -23,3 +23,18 @@ exports.selectTopicById = (topic) => {
         return {topic}
     })
 }
+
+exports.postArticle = (topic, articleData) => {
+    const {title, author, body} = articleData
+    return connection.into('articles').insert([
+        {
+            author: author,
+            title: title,
+            body: body,
+            topic: topic
+        }
+    ]).returning('*')
+    .then(([article]) => {
+        return article
+    })
+}

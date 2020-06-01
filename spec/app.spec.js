@@ -2,7 +2,7 @@ process.env.NODE_ENV = "test";
 const request = require("supertest");
 const app = require("../server/app");
 const connection = require("../server/connection");
-const endpoint = require('../endpoints.json')
+const endpoint = require("../endpoints.json");
 
 beforeEach(() => connection.migrate.rollback());
 beforeEach(() => connection.migrate.latest());
@@ -38,13 +38,12 @@ describe("/TESTING", () => {
 
     test("GET 405 - invalid method", () => {
       return request(app)
-      .patch("/api")
+        .patch("/api")
         .expect(405)
         .then((respond) => {
           expect(respond.body.msg).toEqual("invalid method");
         });
     });
-
   });
 
   // TOPICS TESTING
@@ -63,17 +62,17 @@ describe("/TESTING", () => {
         });
     });
 
-    test('GET 200 shoudl return a topic by id', () => {
+    test("GET 200 shoudl return a topic by id", () => {
       return request(app)
-      .get('/api/topics/mitch')
-      .expect(200)
-      .then(({body}) => {
-        expect(Array.isArray(body.topic)).toEqual(false);
-        expect(body.topic).toHaveProperty("slug");
-        expect(body.topic).toHaveProperty("description");
-      })
+        .get("/api/topics/mitch")
+        .expect(200)
+        .then(({ body }) => {
+          expect(Array.isArray(body.topic)).toEqual(false);
+          expect(body.topic).toHaveProperty("slug");
+          expect(body.topic).toHaveProperty("description");
+        });
     });
-    
+
     // TOPICS ERROR TESTING
 
     test("GET 404 - when incorrect route is specified on api/!, returns 404 and incorrect message", () => {
@@ -94,18 +93,15 @@ describe("/TESTING", () => {
         });
     });
 
-
-  test("GET 405 - invalid method", () => {
-    return request(app)
-      .patch("/api/topics")
-      .expect(405)
-      .then((respond) => {
-        expect(respond.body.msg).toEqual("invalid method");
-      });
+    test("GET 405 - invalid method", () => {
+      return request(app)
+        .patch("/api/topics")
+        .expect(405)
+        .then((respond) => {
+          expect(respond.body.msg).toEqual("invalid method");
+        });
+    });
   });
-});
-
-  
 
   // USERS TESTING
 
@@ -143,15 +139,12 @@ describe("/TESTING", () => {
           expect(respond.body.msg).toEqual("invalid method");
         });
     });
-
   });
 
   // ARTICLE TESTING
 
   describe("/articles", () => {
-
     describe("GET /api/articles/:article_id", () => {
-
       test("GET 200 should return with an article by article id", () => {
         return request(app)
           .get("/api/articles/1")
@@ -162,9 +155,7 @@ describe("/TESTING", () => {
             expect(body.article.title).toBe(
               "Living in the shadow of a great man"
             );
-            expect(body.article.body).toBe(
-              "I find this existence challenging"
-            );
+            expect(body.article.body).toBe("I find this existence challenging");
             expect(body.article.votes).toBe(100);
             expect(body.article.topic).toBe("mitch");
             expect(body.article.author).toBe("butter_bridge");
@@ -182,9 +173,7 @@ describe("/TESTING", () => {
             expect(body.article.title).toBe(
               "Living in the shadow of a great man"
             );
-            expect(body.article.body).toBe(
-              "I find this existence challenging"
-            );
+            expect(body.article.body).toBe("I find this existence challenging");
             expect(body.article.votes).toBe(100);
             expect(body.article.topic).toBe("mitch");
             expect(body.article.author).toBe("butter_bridge");
@@ -212,15 +201,15 @@ describe("/TESTING", () => {
       //     });
       // });
 
-    test("405 - invalid method", () => {
-      return request(app)
-        .put("/api/articles/1")
-        .expect(405)
-        .then((respond) => {
-          expect(respond.body.msg).toEqual("invalid method");
-        });
+      test("405 - invalid method", () => {
+        return request(app)
+          .put("/api/articles/1")
+          .expect(405)
+          .then((respond) => {
+            expect(respond.body.msg).toEqual("invalid method");
+          });
+      });
     });
-  });
     // patch article by id
 
     describe("PATCH /api/articles/:article_id", () => {
@@ -267,17 +256,16 @@ describe("/TESTING", () => {
       //     });
       // });
 
-      test('a patch with no body should return the original article', () => {
+      test("a patch with no body should return the original article", () => {
         return request(app)
-        .patch("/api/articles/1")
-        .send({})
-        .expect(200)
-        .then(({ body }) => {
-          expect(Array.isArray(body.article)).toBe(false);
-          expect(body.article.votes).toBe(100);
-        });
+          .patch("/api/articles/1")
+          .send({})
+          .expect(200)
+          .then(({ body }) => {
+            expect(Array.isArray(body.article)).toBe(false);
+            expect(body.article.votes).toBe(100);
+          });
       });
-
     });
 
     // post comment to article by article ID
@@ -299,9 +287,7 @@ describe("/TESTING", () => {
             expect(comment.article_id).toBe(1);
             expect(comment.votes).toBe(0);
             expect(comment.created_at).not.toBe("Invalid Date");
-            expect(comment.body).toBe(
-              "this really was a great read for sure"
-            );
+            expect(comment.body).toBe("this really was a great read for sure");
           });
       });
 
@@ -320,8 +306,6 @@ describe("/TESTING", () => {
     // get comments by article id
 
     describe("GET /api/articles/:article_id/comments", () => {
-
-
       test("GET 200 Get all the available comments by its id", () => {
         return request(app)
           .get("/api/articles/9/comments")
@@ -368,7 +352,6 @@ describe("/TESTING", () => {
             expect(respond.body.msg).toEqual("invalid method");
           });
       });
-
     });
 
     // get comments by article id & sort by deafult (created_at)
@@ -380,12 +363,12 @@ describe("/TESTING", () => {
           .expect(200)
           .then(({ body }) => {
             body.comments.forEach((comment) => {
-              expect(comment).toHaveProperty('comment_id');
-              expect(comment).toHaveProperty('author');
-              expect(comment).toHaveProperty('votes');
-              expect(comment).toHaveProperty('created_at');
-              expect(comment).toHaveProperty('body');
-            })
+              expect(comment).toHaveProperty("comment_id");
+              expect(comment).toHaveProperty("author");
+              expect(comment).toHaveProperty("votes");
+              expect(comment).toHaveProperty("created_at");
+              expect(comment).toHaveProperty("body");
+            });
             expect(Array.isArray(body.comments)).toBe(true);
             expect(body.comments).toBeSortedBy("created_at", {
               descending: true,
@@ -423,42 +406,37 @@ describe("/TESTING", () => {
       });
     });
 
-
-    
-  describe('GET sort array by a sort_by valid column (', () => {
-    
-
-    test("GET 200 should change up the order sort by, with a viable column", () => {
-      return request(app)
-        .get("/api/articles/1/comments?sort_by=votes")
-        .expect(200)
-        .then(({ body }) => {
-          expect(Array.isArray(body.comments)).toBe(true);
-          expect(body.comments).toBeSortedBy("votes", {
-            descending: true,
-            // coerce: true,
+    describe("GET sort array by a sort_by valid column (", () => {
+      test("GET 200 should change up the order sort by, with a viable column", () => {
+        return request(app)
+          .get("/api/articles/1/comments?sort_by=votes")
+          .expect(200)
+          .then(({ body }) => {
+            expect(Array.isArray(body.comments)).toBe(true);
+            expect(body.comments).toBeSortedBy("votes", {
+              descending: true,
+              // coerce: true,
+            });
           });
-        });
-    });
+      });
 
-    // Error testing for the sort_by being incorrect
+      // Error testing for the sort_by being incorrect
 
-    test("GET 400 - when incorrect query is specified for sort_by, returns 400 and incorrect message", () => {
-      return request(app)
-        .get("/api/articles/1/comments?sort_by=noturl")
-        .expect(400)
-        .then((body) => {
-          expect(body.body.msg).toBe("bad request");
-        });
+      test("GET 400 - when incorrect query is specified for sort_by, returns 400 and incorrect message", () => {
+        return request(app)
+          .get("/api/articles/1/comments?sort_by=noturl")
+          .expect(400)
+          .then((body) => {
+            expect(body.body.msg).toBe("bad request");
+          });
+      });
     });
-  });
 
     //
 
     // get all articles
 
     describe("GET /api/articles", () => {
-
       test("GET 200 responds with an array of all the articles", () => {
         return request(app)
           .get("/api/articles")
@@ -487,7 +465,6 @@ describe("/TESTING", () => {
             expect(respond.body.msg).toEqual("resource not found");
           });
       });
-      
 
       test("GET 405 - invalid method", () => {
         return request(app)
@@ -497,10 +474,8 @@ describe("/TESTING", () => {
             expect(respond.body.msg).toEqual("invalid method");
           });
       });
-      
 
       describe("GET /api/articles & set queries", () => {
-
         describe("set order & sort by", () => {
           // Defaults sort-by articles to DATE in ascending order
 
@@ -571,7 +546,7 @@ describe("/TESTING", () => {
         });
 
         describe("set filtering by specific query", () => {
-          // Filter the array by a specific username 
+          // Filter the array by a specific username
 
           test("GET 200 filter the article by a specific username (butter_bridge)", () => {
             return request(app)
@@ -604,7 +579,6 @@ describe("/TESTING", () => {
               .get("/api/articles?author=lurker")
               .expect(200)
               .then(({ body }) => {
-
                 expect(Array.isArray(body.articles)).toBe(true);
                 expect(body.articles).toEqual([]);
               });
@@ -665,20 +639,17 @@ describe("/TESTING", () => {
                 expect(body.body.msg).toBe("topic not found");
               });
           });
-
         });
       });
 
-      describe('GET /api/articles & pagnation', () => {
-
-
+      describe("GET /api/articles & pagnation", () => {
         test("GET 200 should limit the number of articles shown by a number of responses (default 10)", () => {
           return request(app)
             .get("/api/articles?order=asc")
             .expect(200)
             .then(({ body }) => {
               expect(Array.isArray(body.articles)).toBe(true);
-              expect(body.articles.length).toBe(10)
+              expect(body.articles.length).toBe(10);
             });
         });
 
@@ -688,7 +659,7 @@ describe("/TESTING", () => {
             .expect(200)
             .then(({ body }) => {
               expect(Array.isArray(body.articles)).toBe(true);
-              expect(body.articles.length).toBe(5)
+              expect(body.articles.length).toBe(5);
             });
         });
 
@@ -698,7 +669,7 @@ describe("/TESTING", () => {
             .expect(200)
             .then(({ body }) => {
               expect(Array.isArray(body.articles)).toBe(true);
-              expect(body.articles[0].article_id).toBe(11)
+              expect(body.articles[0].article_id).toBe(11);
             });
         });
 
@@ -709,8 +680,8 @@ describe("/TESTING", () => {
             .then(({ body }) => {
               expect(Array.isArray(body.articles)).toBe(true);
               body.articles.forEach((article) => {
-                expect(article.total_count).toEqual('12')
-              })
+                expect(article.total_count).toEqual("12");
+              });
             });
         });
 
@@ -720,17 +691,12 @@ describe("/TESTING", () => {
             .expect(200)
             .then(({ body }) => {
               expect(Array.isArray(body.articles)).toBe(true);
-              console.log(body)
               body.articles.forEach((article) => {
-                expect(article.total_count).toEqual('1')
-              })
+                expect(article.total_count).toEqual("1");
+              });
             });
         });
-
-
-
       });
-
     });
   });
   // COMMENTS TESTS
@@ -738,7 +704,6 @@ describe("/TESTING", () => {
   // Patch existing comments with an updated (increased/decreased) vote count
 
   describe("/Comments", () => {
-
     describe("PATCH /api/comments/:comment_id", () => {
       test("PATCH 200 patch increase comment votes by comment id", () => {
         return request(app)
@@ -762,15 +727,15 @@ describe("/TESTING", () => {
           });
       });
 
-      test('PATCH 200 - return a 200 for missing vote input', () => {
+      test("PATCH 200 - return a 200 for missing vote input", () => {
         return request(app)
-        .patch('/api/comments/3')
-        .send({ inc_votes: 0 })
-        .expect(200)
-        .then(({ body }) => {
-          expect(Array.isArray(body.comment)).toBe(false);
-          expect(body.comment.votes).toBe(100);
-        });
+          .patch("/api/comments/3")
+          .send({ inc_votes: 0 })
+          .expect(200)
+          .then(({ body }) => {
+            expect(Array.isArray(body.comment)).toBe(false);
+            expect(body.comment.votes).toBe(100);
+          });
       });
 
       // Error handling for the comment vote updating
@@ -795,7 +760,6 @@ describe("/TESTING", () => {
           });
       });
 
-
       test("405 - invalid method", () => {
         return request(app)
           .post("/api/comments/1")
@@ -804,24 +768,71 @@ describe("/TESTING", () => {
             expect(respond.body.msg).toEqual("invalid method");
           });
       });
-
     });
 
     describe("DELETE /api/comments/:comment_id", () => {
       test("DELETE 204 - Removes comment by id", () => {
-        return request(app)
-        .del('/api/comments/1')
-        .expect(204)
-      })
+        return request(app).del("/api/comments/1").expect(204);
+      });
 
-      test('DELETE 404 - comment id is non-existent', () => {
+      test("DELETE 404 - comment id is non-existent", () => {
         return request(app)
-        .del('/api/comments/5000')
-        .expect(404)
-        .then((respond) => {
-          expect(respond.body.msg).toEqual('comment not found');
-        })
+          .del("/api/comments/5000")
+          .expect(404)
+          .then((respond) => {
+            expect(respond.body.msg).toEqual("comment not found");
+          });
       });
     });
   });
+
+  // EXTRA WORK FOR ADD ARTICLEs/TOPIC
+
+  describe.only("POST /topics", () => {
+    test("POST 201 - should post a new article to the topic ", () => {
+      return request(app)
+      .post("/api/topics/mitch")
+      .send({
+        title: 'New Article',
+        author: 'butter_bridge',
+        body: "This is a new article",
+      })
+      .expect(201)
+      .then(({body}) => {
+              expect(Array.isArray(body)).toBe(false);
+      expect(body.author).toBe("butter_bridge");
+      expect(body.topic).toBe('mitch');
+      expect(body.created_at).not.toBe("Invalid Date");
+      expect(body.body).toBe(
+        "This is a new article"
+      );
+      })
+    });
+
+
+  });
+
+
 });
+
+
+// describe("POST /api/articles/:article_id/comments", () => {
+//   test("POST 201 Adds a new comment to an article by article id", () => {
+//     return request(app)
+//       .post("/api/articles/1/comments")
+//       .send({
+//         username: "butter_bridge",
+//         body: "this really was a great read for sure",
+//       })
+//       .expect(201)
+//       .then(({ body }) => {
+//         expect(Array.isArray(body.comment)).toBe(false);
+//         const { comment } = body;
+//         expect(comment.comment_id).toBe(19);
+//         expect(comment.author).toBe("butter_bridge");
+//         expect(comment.article_id).toBe(1);
+//         expect(comment.votes).toBe(0);
+//         expect(comment.created_at).not.toBe("Invalid Date");
+//         expect(comment.body).toBe("this really was a great read for sure");
+//       });
+//   });

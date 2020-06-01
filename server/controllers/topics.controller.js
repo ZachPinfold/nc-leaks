@@ -1,4 +1,4 @@
-const {selectTopics, selectTopicById} = require('../models/topics.model')
+const {selectTopics, selectTopicById, postArticle} = require('../models/topics.model')
 
 exports.getTopics = (req, res, next) => {
     selectTopics().then((topics) => {
@@ -16,5 +16,15 @@ exports.getTopicById = (req, res, next) => {
         res.send(topic)
     }).catch((err)=> {
         next(err)
+    })
+}
+
+exports.postArticleById = (req, res, next) => {
+    const {topic_id} = req.params
+    const articleData = req.body
+    postArticle(topic_id, articleData).then((article) => {
+        console.log(article)
+        res.status(201)
+        res.send(article)
     })
 }
