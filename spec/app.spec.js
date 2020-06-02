@@ -809,6 +809,21 @@ describe("/TESTING", () => {
       })
     });
 
+    // ERROR HANDLING
+
+    test("POST 404 - when topic doesn't exist, return error", () => {
+      return request(app)
+        .post("/api/topics/nosuchtopic")
+        .send({
+          title: 'New Article',
+          author: 'butter_bridge',
+          body: "This is a new article",
+        })
+        .expect(404)
+        .then((respond) => {
+          expect(respond.body.msg).toEqual("FOREIGN KEY VIOLATION");
+        });
+    });
 
   });
 

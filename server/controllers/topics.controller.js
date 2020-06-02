@@ -23,8 +23,9 @@ exports.postArticleById = (req, res, next) => {
     const {topic_id} = req.params
     const articleData = req.body
     postArticle(topic_id, articleData).then((article) => {
-        console.log(article)
         res.status(201)
         res.send(article)
+    }).catch((err)=>  {
+        next(err)
     })
 }
