@@ -17,7 +17,7 @@ exports.seed = function (knex) {
       // .then((article) => {console.log(article)})
     })
     .then((articleRows) => {
-      // console.log(articleRows[0])
+      console.log(articleRows[0])
       const newCommentTimeData = formatDates(commentData);
 
       const articleRef = makeRefObj(articleRows, "article_id", "title");
